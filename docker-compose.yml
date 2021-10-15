@@ -1,0 +1,53 @@
+version: "3.8"
+services:
+  db:
+    image: mysql:5.7.22
+    container_name: financapp-db
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_USER: ${DB_USERNAME}
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    volumes:
+      - ./mysql:/docker-entrypoint-initdb.d
+    networks:
+      - financapp
+
+  nginx:
+    container_name: nginx
+    build: docker/nginx
+    command: nginx -g "daemon off;"
+    links:
+      - php
+    ports:
+      - "8000:80"
+    depends_on:
+      - db
+    networks:
+      - financapp
+
+  php:
+    container_name: php
+    build: docker/php
+    volumes:
+      - ./lumen:/var/www/html
+    working_dir: /var/www/html
+    command: php-fpm
+    links:
+      - db:db
+    ports:
+      - "9000:9000"
+    depends_on:
+      - db
+    networks:
+      - financapp
+
+networks:
+    financapp:
+        driver: bridge
