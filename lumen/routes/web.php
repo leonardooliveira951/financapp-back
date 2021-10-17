@@ -13,7 +13,6 @@
 |
 */
 
-use Firebase\JWT\JWT;
 use Illuminate\Http\Request;
 
 $router->group(['middleware' => 'jwt'], function () use ($router) {
@@ -35,19 +34,10 @@ $router->group(['middleware' => 'jwt'], function () use ($router) {
 
 });
 
+$router->post('/register', [
+    'uses' => 'UserController@create',
+]);
 
-
-$router->post('/login', function (Request $request) use ($router) {
-    $token = JWT::encode([
-        'id' => 1,
-        'iat' => time(),
-        'exp' => time() + 3600
-    ], 'YRr9wFSzYzQGwkFsnzvqQhcmNUjDGBwZ');
-
-    return compact('token');
-});
-
-
-$router->get('/', function () use ($router) {
-    return $router->app->version();
-});
+$router->post('/login', [
+    'uses' => 'UserController@login',
+]);
