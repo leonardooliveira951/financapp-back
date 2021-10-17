@@ -19,16 +19,16 @@ $router->group(['middleware' => 'jwt'], function () use ($router) {
 
     $router->group(['prefix' => 'category'], function () use ($router) {
         $router->get('all', [
-            'uses' => 'ExampleController@getCategories'
+            'uses' => 'CategoryController@getCategories'
         ]);
         $router->post('insert', [
-            'uses' => 'ExampleController@insertCategory'
+            'uses' => 'CategoryController@insertCategory'
         ]);
-        $router->delete('/', [
-            'uses' => 'ExampleController@deleteCategory'
+        $router->delete('/{id}', [
+            'uses' => 'CategoryController@deleteCategory'
         ]);
         $router->patch('/', [
-            'uses' => 'ExampleController@updateCategory'
+            'uses' => 'CategoryController@updateCategory'
         ]);
     });
 
