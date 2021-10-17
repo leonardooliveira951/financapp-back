@@ -13,41 +13,31 @@
 |
 */
 
-use Firebase\JWT\JWT;
 use Illuminate\Http\Request;
 
 $router->group(['middleware' => 'jwt'], function () use ($router) {
 
     $router->group(['prefix' => 'category'], function () use ($router) {
         $router->get('all', [
-            'uses' => 'ExampleController@getCategories'
+            'uses' => 'CategoryController@getCategories'
         ]);
         $router->post('insert', [
-            'uses' => 'ExampleController@insertCategory'
+            'uses' => 'CategoryController@insertCategory'
         ]);
-        $router->delete('/', [
-            'uses' => 'ExampleController@deleteCategory'
+        $router->delete('/{id}', [
+            'uses' => 'CategoryController@deleteCategory'
         ]);
         $router->patch('/', [
-            'uses' => 'ExampleController@updateCategory'
+            'uses' => 'CategoryController@updateCategory'
         ]);
     });
 
 });
 
+$router->post('/register', [
+    'uses' => 'UserController@create',
+]);
 
-
-$router->post('/login', function (Request $request) use ($router) {
-    $token = JWT::encode([
-        'id' => 1,
-        'iat' => time(),
-        'exp' => time() + 3600
-    ], 'YRr9wFSzYzQGwkFsnzvqQhcmNUjDGBwZ');
-
-    return compact('token');
-});
-
-
-$router->get('/', function () use ($router) {
-    return $router->app->version();
-});
+$router->post('/login', [
+    'uses' => 'UserController@login',
+]);

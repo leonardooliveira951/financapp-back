@@ -14,7 +14,7 @@ class CategoryService
             return null;
         }
         $category = new Category;
-        $category->user = 'USER_VARIABLE';
+        $category->user_id = $data->user()['id'];
         $category->name = $data['name'];
         $category->type = $data['type'];
         $category->color = $data['color'];

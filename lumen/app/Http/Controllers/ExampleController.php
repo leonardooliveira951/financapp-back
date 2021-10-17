@@ -15,17 +15,8 @@ class ExampleController extends Controller
      */
     public function getCategories(Request $request)
     {
-        try {
-            $response = CategoryService::getCategories();
-            return $response;
-        } catch (Exception $e) {
-            $message = "Erro ao buscar categorias: ". $e->getMessage();
-            return response()->json([
-                'status' => false,
-                'message' => $message
-            ],500
-            );
-        }
+        dd('tudo certo');
+
     }
 
 
