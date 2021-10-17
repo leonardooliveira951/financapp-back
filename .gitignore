@@ -4,3 +4,6 @@ Homestead.json
 Homestead.yaml
 .env
 .phpunit.result.cache
+/lumen/vendor
+.editorconfig
+.styleci.yml
