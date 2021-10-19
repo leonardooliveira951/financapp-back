@@ -36,8 +36,13 @@ $router->group(['middleware' => 'jwt'], function () use ($router) {
         'uses' => 'UserController@changeName'
     ]);
 
+    $router->get('colors', [
+        'uses' => 'ColorController@getColors'
+    ]);
 });
 
+
+## rotas sem autenticação
 $router->post('/register', [
     'uses' => 'UserController@create',
 ]);
