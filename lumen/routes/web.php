@@ -32,6 +32,21 @@ $router->group(['middleware' => 'jwt'], function () use ($router) {
         ]);
     });
 
+    $router->group(['prefix' => 'account'], function () use ($router) {
+        $router->get('all', [
+            'uses' => 'AccountController@getCategories'
+        ]);
+        $router->post('insert', [
+            'uses' => 'AccountController@insertCategory'
+        ]);
+        $router->delete('/{id}', [
+            'uses' => 'AccountController@deleteCategory'
+        ]);
+        $router->post('/{id}', [
+            'uses' => 'AccountController@updateCategory'
+        ]);
+    });
+    
     $router->post('user/{id}/change-name', [
         'uses' => 'UserController@changeName'
     ]);
