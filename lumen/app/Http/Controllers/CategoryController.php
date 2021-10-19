@@ -82,5 +82,28 @@ class CategoryController extends Controller
         }
     }
 
+    public function updateCategory(Request $request)
+    {
+        $this->validate($request, [
+            'name' => 'string',
+            'type' => 'string',
+            'color' => 'string',
+            'active' => 'boolean'
+        ]);
 
+        $response = CategoryService::updateCategory($request);
+        if (is_null($response)) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Categoria não encontrada.'
+            ], 400
+            );
+        }
+        return response()->json([
+            'status' => true,
+            'message' => 'Categoria alterada com sucesso!'
+        ],200
+        );
+
+    }
 }
