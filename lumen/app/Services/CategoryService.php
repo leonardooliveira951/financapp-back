@@ -17,7 +17,7 @@ class CategoryService
         $category->user_id = $data->user()['id'];
         $category->name = $data['name'];
         $category->type = $data['type'];
-        $category->color = $data['color'];
+        $category->color_id = $data['color'];
         $category->save();
         return $category;
     }

@@ -40,7 +40,7 @@ class CategoryController extends Controller
         $this->validate($request, [
             'name' => 'required|string',
             'type' => 'required|string',
-            'color' => 'required|string',
+            'color' => 'required|integer',
         ]);
 
         try {
