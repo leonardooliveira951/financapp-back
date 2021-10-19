@@ -68,4 +68,27 @@ class UserController extends Controller
         }
     }
 
+    public function changeName(Request $request)
+    {
+        $this->validate($request, [
+            'name' => 'required|string'
+        ]);
+        try {
+            $response = UserService::changeName($request);
+            return response()->json([
+                'status' => true,
+                'message' => 'Nome alterado com sucesso.'
+            ], 200
+            );
+        } catch (Exception $e) {
+            $message = "Erro ao alterar nome: ". $e->getMessage();
+            return response()->json([
+                'status' => false,
+                'message' => $message
+            ],500
+            );
+        }
+    }
+
+
 }

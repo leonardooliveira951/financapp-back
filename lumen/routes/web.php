@@ -32,6 +32,10 @@ $router->group(['middleware' => 'jwt'], function () use ($router) {
         ]);
     });
 
+    $router->post('user/{id}/change-name', [
+        'uses' => 'UserController@changeName'
+    ]);
+
 });
 
 $router->post('/register', [
