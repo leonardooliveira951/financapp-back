@@ -34,17 +34,17 @@ class CategoryService
         return true;
     }
 
-    public static function updateCategory($data)
+    public static function updateCategory($request)
     {
-        if(!Category::where('id',$data['id'])->exists())
+        if(!Category::where('id',$request->id)->exists())
         {
             return null;
         }
-        Category::where('id',$data['id'])->update([
-            'name' => $data['name'],
-            'type' => $data['type'],
-            'color' => $data['color'],
-            'active' => $data['active']
+        Category::where('id',$request->id)->update([
+            'name' => $request->all()['name'],
+            'type' => $request->all()['type'],
+            'color' => $request->all()['color'],
+            'active' => $request->all()['active']
         ]);
         return true;
     }

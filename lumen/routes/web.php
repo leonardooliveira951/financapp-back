@@ -27,10 +27,14 @@ $router->group(['middleware' => 'jwt'], function () use ($router) {
         $router->delete('/{id}', [
             'uses' => 'CategoryController@deleteCategory'
         ]);
-        $router->patch('/', [
+        $router->post('/{id}', [
             'uses' => 'CategoryController@updateCategory'
         ]);
     });
+
+    $router->post('user/{id}/change-name', [
+        'uses' => 'UserController@changeName'
+    ]);
 
 });
 

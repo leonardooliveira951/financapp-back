@@ -40,4 +40,15 @@ class UserService
         return $token;
     }
 
+    public static function changeName($request)
+    {
+        if(!User::where('id',$request->id)->exists())
+        {
+            return null;
+        }
+        return User::where('id',$request->id)->update([
+            'name' => $request->all()['name']
+        ]);
+    }
+
 }

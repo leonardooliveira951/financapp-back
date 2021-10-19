@@ -22,7 +22,7 @@ class ExampleMiddleware
         $token = str_replace('Bearer ', '', $authorization);
 
         try {
-            $user = JWT::decode($token, 'YRr9wFSzYzQGwkFsnzvqQhcmNUjDGBwZ', array('HS256'));
+            $user = JWT::decode($token, env('APP_KEY'), array('HS256'));
         } catch (ExpiredException $error) {
             return response("Token expirado", 401);
         }
