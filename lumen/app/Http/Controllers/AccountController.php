@@ -30,7 +30,7 @@ class AccountController extends Controller
             ], 201
             );
         } catch (Exception $e) {
-            $message = "Erro ao buscar categorias: ". $e->getMessage();
+            $message = "Erro ao inserir conta: ". $e->getMessage();
             return response()->json([
                 'status' => false,
                 'message' => $message

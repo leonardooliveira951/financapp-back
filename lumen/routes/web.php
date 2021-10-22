@@ -21,15 +21,6 @@ $router->group(['middleware' => 'jwt'], function () use ($router) {
         $router->post('insert', [
             'uses' => 'AccountController@insertAccount'
         ]);
-        $router->get('insert', [
-            'uses' => 'AccountController@insertCategory'
-        ]);
-        $router->delete('/{id}', [
-            'uses' => 'AccountController@deleteCategory'
-        ]);
-        $router->post('/{id}', [
-            'uses' => 'AccountController@updateCategory'
-        ]);
     });
 
     $router->group(['prefix' => 'category'], function () use ($router) {
