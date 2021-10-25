@@ -18,7 +18,7 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function create(Request $request)
+    public function createUser(Request $request)
     {
         $params = $this->validate($request, [
             'name' => 'required|string',
@@ -28,9 +28,15 @@ class UserController extends Controller
 
         try {
             $response = UserService::createUser($params);
+            if ($response == null){
+                return response()->json([
+                    'status' => false,
+                    'user' => 'email já cadastrado'
+                ], 409
+                );
+            }
             return response()->json([
                 'status' => true,
-                'message' => 'Usuário criado com sucesso!',
                 'user' => $response
             ], 201
             );
@@ -52,6 +58,13 @@ class UserController extends Controller
         ]);
         try {
             $response = UserService::loginUser($params);
+            if ($response == null){
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Usuário ou senha inválidos'
+                ], 401
+                );
+            }
             return response()->json([
                 'status' => true,
                 'message' => 'Login realizado com sucesso!',

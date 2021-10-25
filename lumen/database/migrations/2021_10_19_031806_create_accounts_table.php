@@ -17,7 +17,7 @@ class CreateAccountsTable extends Migration
         Schema::create('accounts', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained();
-            $table->string('name');
+            $table->string('name')->unique();
             $table->string('type');
             $table->double('balance');
             $table->double('limit');

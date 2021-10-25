@@ -26,36 +26,37 @@ class AccountService
         return $account;
     }
 
-    public static function deleteCategory($id)
+    public static function deleteAccount($id)
     {
-        if(!Category::where('id',$id)->exists())
+        if(!Account::where('id',$id)->exists())
         {
             return null;
         }
-        Category::where('id',$id)->update([
+        Account::where('id',$id)->update([
             'active' => false
         ]);
         return true;
     }
 
-    public static function updateCategory($request)
+    public static function updateAccount($request)
     {
-        if(!Category::where('id',$request->id)->exists())
+        if(!Account::where('id',$request->id)->exists())
         {
             return null;
         }
-        Category::where('id',$request->id)->update([
+        Account::where('id',$request->id)->update([
             'name' => $request->all()['name'],
             'type' => $request->all()['type'],
-            'color' => $request->all()['color'],
-            'active' => $request->all()['active']
+            'color_id' => $request->all()['color_id'],
+            'invoice_closing_date' => $request->all()['invoice_closing_date'],
+            'invoice_due_date' => $request->all()['invoice_due_date']
         ]);
         return true;
     }
 
-    public static function getCategories()
+    public static function getAccounts()
     {
-        return Category::all();
+        return Account::all();
     }
 
 }

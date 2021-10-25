@@ -7,17 +7,17 @@ use App\Models\Category;
 
 class CategoryService
 {
-    public static function insertCategory($data)
+    public static function insertCategory($request)
     {
-        if(Category::where('name',$data['name'])->exists())
+        if(Category::where('name',$request['name'])->exists())
         {
             return null;
         }
         $category = new Category;
-        $category->user_id = $data->user()['id'];
-        $category->name = $data['name'];
-        $category->type = $data['type'];
-        $category->color_id = $data['color'];
+        $category->user_id = $request->user()['id'];
+        $category->name = $request['name'];
+        $category->type = $request['type'];
+        $category->color_id = $request['color_id'];
         $category->save();
         return $category;
     }
@@ -43,8 +43,7 @@ class CategoryService
         Category::where('id',$request->id)->update([
             'name' => $request->all()['name'],
             'type' => $request->all()['type'],
-            'color' => $request->all()['color'],
-            'active' => $request->all()['active']
+            'color_id' => $request->all()['color_id']
         ]);
         return true;
     }
