@@ -47,6 +47,21 @@ $router->group(['middleware' => 'jwt'], function () use ($router) {
         ]);
     });
 
+    $router->group(['prefix' => 'transaction'], function () use ($router) {
+        $router->get('summary', [
+            'uses' => 'TransactionController@getTransactionSummary'
+        ]);
+        $router->post('insert', [
+            'uses' => 'TransactionController@insertTransaction'
+        ]);
+        $router->delete('/{id}', [
+            'uses' => 'TransactionController@deleteCategory'
+        ]);
+        $router->post('update/{id}', [
+            'uses' => 'TransactionController@updateCategory'
+        ]);
+    });
+
     $router->post('user/{id}/change-name', [
         'uses' => 'UserController@changeName'
     ]);

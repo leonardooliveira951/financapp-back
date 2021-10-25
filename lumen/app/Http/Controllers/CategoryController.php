@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Services\CategoryService;
-use App\Services\UserService;
 use Exception;
 use Illuminate\Http\Request;
 

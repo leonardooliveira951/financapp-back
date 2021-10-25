@@ -3,12 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Color;
-use App\Services\UserService;
 use Exception;
-use Firebase\JWT\JWT;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 
 class ColorController extends Controller
 {
