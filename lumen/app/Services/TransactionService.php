@@ -3,24 +3,29 @@
 
 namespace App\Services;
 
-use App\Models\Category;
+use App\Models\Transaction;
 
-class CategoryService
+class TransactionService
 {
-    public static function insertCategory($request)
+    public static function insertTransaction($request)
     {
-        if(Category::where('name',$request['name'])->exists())
-        {
-            return null;
-        }
-        $category = new Category;
-        $category->user_id = $request->user()['id'];
-        $category->name = $request['name'];
-        $category->type = $request['type'];
-        $category->color_id = $request['color_id'];
-        $category->save();
-        return $category;
+        $transaction = new Transaction();
+        $transaction->user_id = $request->user()['id'];
+        $transaction->description = $request['description'];
+        $transaction->type = $request['type'];
+        $transaction->amount = $request['amount'];
+        $transaction->date = $request['date'];
+        $transaction->installment = $request['installment'];
+        $transaction->category_id = $request['category_id'];
+        $transaction->origin_account_id = $request['origin_account_id'];
+        $transaction->destiny_account_id = $request['destiny_account_id'];
+        $transaction->save();
+        return $transaction;
     }
+
+
+
+
 
     public static function deleteCategory($id)
     {

@@ -17,7 +17,6 @@ class ExampleMiddleware
      */
     public function handle($request, Closure $next)
     {
-
         $authorization = $request->header('Authorization');
         $token = str_replace('Bearer ', '', $authorization);
 

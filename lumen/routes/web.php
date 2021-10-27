@@ -17,8 +17,23 @@ use Illuminate\Http\Request;
 
 $router->group(['middleware' => 'jwt'], function () use ($router) {
 
+    $router->group(['prefix' => 'account'], function () use ($router) {
+        $router->get('get/all', [
+            'uses' => 'AccountController@getAccounts'
+        ]);
+        $router->post('insert', [
+            'uses' => 'AccountController@insertAccount'
+        ]);
+        $router->post('update/{id}', [
+            'uses' => 'AccountController@updateAccount'
+        ]);
+        $router->delete('{id}', [
+            'uses' => 'AccountController@deleteAccount'
+        ]);
+    });
+
     $router->group(['prefix' => 'category'], function () use ($router) {
-        $router->get('all', [
+        $router->get('get/all', [
             'uses' => 'CategoryController@getCategories'
         ]);
         $router->post('insert', [
@@ -27,8 +42,23 @@ $router->group(['middleware' => 'jwt'], function () use ($router) {
         $router->delete('/{id}', [
             'uses' => 'CategoryController@deleteCategory'
         ]);
-        $router->post('/{id}', [
+        $router->post('update/{id}', [
             'uses' => 'CategoryController@updateCategory'
+        ]);
+    });
+
+    $router->group(['prefix' => 'transaction'], function () use ($router) {
+        $router->get('summary', [
+            'uses' => 'TransactionController@getTransactionSummary'
+        ]);
+        $router->post('insert', [
+            'uses' => 'TransactionController@insertTransaction'
+        ]);
+        $router->delete('/{id}', [
+            'uses' => 'TransactionController@deleteCategory'
+        ]);
+        $router->post('update/{id}', [
+            'uses' => 'TransactionController@updateCategory'
         ]);
     });
 
@@ -36,10 +66,15 @@ $router->group(['middleware' => 'jwt'], function () use ($router) {
         'uses' => 'UserController@changeName'
     ]);
 
+    $router->get('colors', [
+        'uses' => 'ColorController@getColors'
+    ]);
 });
 
+
+## rotas sem autenticação
 $router->post('/register', [
-    'uses' => 'UserController@create',
+    'uses' => 'UserController@createUser',
 ]);
 
 $router->post('/login', [

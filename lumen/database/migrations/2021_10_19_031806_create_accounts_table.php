@@ -5,7 +5,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCategoriesTable extends Migration
+class CreateAccountsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,18 +14,21 @@ class CreateCategoriesTable extends Migration
      */
     public function up()
     {
-        Schema::create('categories', function (Blueprint $table) {
+        Schema::create('accounts', function (Blueprint $table) {
             $table->id();
-            $table->integer('user_id');
-            $table->string('name');
+            $table->foreignId('user_id')->constrained();
+            $table->string('name')->unique();
             $table->string('type');
-            $table->string('color');
+            $table->double('balance');
+            $table->double('limit')->nullable();
+            $table->integer('invoice_closing_date')->nullable();
+            $table->integer('invoice_due_date')->nullable();
+            $table->foreignId('color_id')->constrained();
             $table->boolean('active')->default(true);
             $table->timestamp('created_at')
                 ->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')
                 ->default(DB::raw('CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP'));
-//            $table->foreign('user_id')->references('id')->on('users');
         });
     }
 
@@ -36,6 +39,6 @@ class CreateCategoriesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('categories');
+        Schema::dropIfExists('accounts');
     }
 }

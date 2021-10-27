@@ -27,7 +27,7 @@ class UserService
         $user = User::where('email', $data['email'])->first();
 
         if (is_null($user) || !Hash::check($data['password'], $user->password)) {
-            return response()->json('Usuário ou senha inválidos', 401);
+            return null;
         }
 
         $token = JWT::encode([

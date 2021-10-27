@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Services\CategoryService;
-use App\Services\UserService;
 use Exception;
 use Illuminate\Http\Request;
 
@@ -40,11 +39,18 @@ class CategoryController extends Controller
         $this->validate($request, [
             'name' => 'required|string',
             'type' => 'required|string',
-            'color' => 'required|string',
+            'color_id' => 'required|integer',
         ]);
 
         try {
             $response = CategoryService::insertCategory($request);
+            if ($response == null){
+                return response()->json([
+                    'status' => false,
+                    'category' => 'Nome de categoria já utilizado.'
+                ], 409
+                );
+            }
             return response()->json([
                 'status' => true,
                 'message' => 'Categoria criada com sucesso',
@@ -63,9 +69,15 @@ class CategoryController extends Controller
 
     public function deleteCategory(Request $request)
     {
-
         try {
             $response = CategoryService::deleteCategory($request->id);
+            if ($response == null){
+                return response()->json([
+                    'status' => false,
+                    'category' => 'Categoria não localizada'
+                ], 404
+                );
+            }
             return response()->json([
                 'status' => true,
                 'message' => 'Categoria deletada com sucesso',
@@ -85,25 +97,33 @@ class CategoryController extends Controller
     public function updateCategory(Request $request)
     {
         $this->validate($request, [
-            'name' => 'string',
-            'type' => 'string',
-            'color' => 'string',
-            'active' => 'boolean'
+            'name' => 'required|string',
+            'type' => 'required|string',
+            'color_id' => 'required|integer'
         ]);
-
-        $response = CategoryService::updateCategory($request);
-        if (is_null($response)) {
+        try {
+            $response = CategoryService::updateCategory($request);
+            if (is_null($response)) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Categoria não encontrada.'
+                ], 404
+                );
+            }
+            return response()->json([
+                'status' => true,
+                'message' => 'Categoria alterada com sucesso.'
+            ],200
+            );
+        } catch (Exception $e) {
+            $message = "Erro ao atualizar categoria: ". $e->getMessage();
             return response()->json([
                 'status' => false,
-                'message' => 'Categoria não encontrada.'
-            ], 400
+                'message' => $message
+            ],500
             );
         }
-        return response()->json([
-            'status' => true,
-            'message' => 'Categoria alterada com sucesso!'
-        ],200
-        );
+
 
     }
 }
