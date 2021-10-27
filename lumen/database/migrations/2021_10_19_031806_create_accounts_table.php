@@ -20,9 +20,9 @@ class CreateAccountsTable extends Migration
             $table->string('name')->unique();
             $table->string('type');
             $table->double('balance');
-            $table->double('limit');
-            $table->integer('invoice_closing_date');
-            $table->integer('invoice_due_date');
+            $table->double('limit')->nullable();
+            $table->integer('invoice_closing_date')->nullable();
+            $table->integer('invoice_due_date')->nullable();
             $table->foreignId('color_id')->constrained();
             $table->boolean('active')->default(true);
             $table->timestamp('created_at')
