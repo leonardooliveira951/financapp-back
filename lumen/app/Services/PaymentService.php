@@ -4,27 +4,22 @@
 namespace App\Services;
 
 use App\Models\Payment;
-use App\Models\Transaction;
 
 class TransactionService
 {
-    public static function insertTransaction($request)
+    public static function insertPayments($transaction)
     {
-        $transaction = new Transaction();
-        $transaction->user_id = $request->user()['id'];
-        $transaction->description = $request['description'];
-        $transaction->type = $request['type'];
-        $transaction->amount = $request['amount'];
-        $transaction->date = $request['date'];
-        $transaction->installment = $request['installment'];
-        $transaction->category_id = $request['category_id'];
-        $transaction->origin_account_id = $request['origin_account_id'];
-        $transaction->destiny_account_id = $request['destiny_account_id'];
-        $transaction->save();
-        dd($transaction);
-        PaymentService::insertPayments($transaction);
+        if ($transaction->installment > 1){
+            dd('implementar parcelados');
+        }
 
-        return $transaction;
+        $payment = new Payment();
+        $payment->amount = $transaction->amount;
+        $payment->date = $transaction->date;
+        $payment->transaction_id = $transaction->id;
+        $payment->save();
+
+        return $payment;
     }
 
 
