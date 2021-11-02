@@ -18,7 +18,7 @@ class CreatePaymentsTable extends Migration
             $table->id();
             $table->double('amount');
             $table->timestamp('date');
-            $table->foreignId('transaction_id')->constrained();
+            $table->foreignId('transaction_id')->constrained()->onDelete('cascade');
             $table->timestamp('created_at')
                 ->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')

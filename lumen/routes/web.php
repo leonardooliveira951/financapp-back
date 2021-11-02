@@ -54,11 +54,11 @@ $router->group(['middleware' => 'jwt'], function () use ($router) {
         $router->post('insert', [
             'uses' => 'TransactionController@insertTransaction'
         ]);
-        $router->delete('/{id}', [
-            'uses' => 'TransactionController@deleteCategory'
+        $router->post('/update/{id}', [
+            'uses' => 'TransactionController@updateTransaction'
         ]);
-        $router->post('update/{id}', [
-            'uses' => 'TransactionController@updateCategory'
+        $router->delete('/delete/{id}', [
+            'uses' => 'TransactionController@deleteTransaction'
         ]);
     });
 

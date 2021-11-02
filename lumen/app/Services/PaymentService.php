@@ -3,12 +3,14 @@
 
 namespace App\Services;
 
+use App\Models\Account;
 use App\Models\Payment;
 
-class TransactionService
+class PaymentService
 {
     public static function insertPayments($transaction)
     {
+        $account = Account::where('id',$transaction->id)->
         if ($transaction->installment > 1){
             dd('implementar parcelados');
         }
