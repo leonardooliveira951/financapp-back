@@ -16,26 +16,9 @@ class Cors
      */
     public function handle($request, Closure $next)
     {
-        $headers = [
-            'Access-Control-Allow-Origin'      => '*',
-            'Access-Control-Allow-Methods'     => 'POST, GET, OPTIONS, PUT, DELETE',
-            'Access-Control-Allow-Headers', "Accept, Authorization, Content-Type"
-        ];
-
-        if ($request->isMethod('OPTIONS')) {
-            return response()->json('{"method":"OPTIONS"}', 200, $headers);
-        }
-
         $response = $next($request);
 
-        foreach ($headers as $key => $value) {
-            if ($response instanceof StreamedResponse)
-            {
-                $response->headers->set($key, $value);
-            } else {
-                $response->header($key, $value);
-            }
-        }
+        $response->header('Access-Control-Allow-Origin','*');
 
         return $response;
     }
