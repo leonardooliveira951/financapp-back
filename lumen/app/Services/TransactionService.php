@@ -5,6 +5,8 @@ namespace App\Services;
 
 use App\Models\Payment;
 use App\Models\Transaction;
+use App\Services\PaymentService;
+
 
 class TransactionService
 {
@@ -21,45 +23,34 @@ class TransactionService
         $transaction->origin_account_id = $request['origin_account_id'];
         $transaction->destiny_account_id = $request['destiny_account_id'];
         $transaction->save();
-        dd($transaction);
+
         PaymentService::insertPayments($transaction);
 
         return $transaction;
     }
 
-
-
-
-
-    public static function deleteCategory($id)
+    public static function updateTransaction($request)
     {
-        if(!Category::where('id',$id)->exists())
+        if(!Transaction::where('id',$request->id)->exists())
         {
             return null;
         }
-        Category::where('id',$id)->update([
-            'active' => false
+        Transaction::where('id',$request->id)->update([
+            'description' => $request->all()['description'],
+            'category_id' => $request->all()['category_id'],
+            'amount' => $request->all()['amount'],
+            'date' => $request->all()['date']
         ]);
         return true;
     }
 
-    public static function updateCategory($request)
+    public static function deleteTransaction($id)
     {
-        if(!Category::where('id',$request->id)->exists())
+        if(!Transaction::where('id',$id)->exists())
         {
             return null;
         }
-        Category::where('id',$request->id)->update([
-            'name' => $request->all()['name'],
-            'type' => $request->all()['type'],
-            'color_id' => $request->all()['color_id']
-        ]);
-        return true;
-    }
-
-    public static function getCategories()
-    {
-        return Category::all();
+        return Transaction::where('id',$id)->delete();
     }
 
 }

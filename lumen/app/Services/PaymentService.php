@@ -3,14 +3,19 @@
 
 namespace App\Services;
 
+use App\Models\Account;
 use App\Models\Payment;
+use Carbon\Carbon;
 
-class TransactionService
+class PaymentService
 {
     public static function insertPayments($transaction)
     {
-        if ($transaction->installment > 1){
-            dd('implementar parcelados');
+        $account = Account::where('id', $transaction->origin_account_id)->get()->first();
+
+        if ($account->type == 'Cartão de Crédito')
+        {
+            $amount = $transaction->amount / $transaction->installment;
         }
 
         $payment = new Payment();
@@ -18,6 +23,17 @@ class TransactionService
         $payment->date = $transaction->date;
         $payment->transaction_id = $transaction->id;
         $payment->save();
+
+        $current_date = Carbon::now()->toDateString();
+        if ($current_date == $transaction->date)
+        {
+            $account->update([
+                'balance' => $account->balance - $payment->amount
+            ]);
+            dd('fez o update');
+        }
+
+        dd('passou');
 
         return $payment;
     }

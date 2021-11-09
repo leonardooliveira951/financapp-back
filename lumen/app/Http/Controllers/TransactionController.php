@@ -24,7 +24,7 @@ class TransactionController extends Controller
             'installment' => 'required|integer',
             'category_id' => 'required|integer',
             'origin_account_id' => 'required|integer',
-            'destiny_account_id' => 'required|integer'
+            'destiny_account_id' => 'integer'
         ]);
         try {
             $response = TransactionService::insertTransaction($request);
@@ -44,36 +44,30 @@ class TransactionController extends Controller
         }
     }
 
-
-
-
-
-    public function updateAccount(Request $request)
+    public function updateTransaction(Request $request)
     {
         $this->validate($request, [
-            'name' => 'required|string',
-            'type' => 'required|string',
-            'invoice_closing_date' => 'required|integer',
-            'invoice_due_date' => 'required|integer',
-            'color_id' => 'required|integer'
+            'description' => 'required|string',
+            'category_id' => 'required|integer',
+            'amount' => 'required|numeric',
+            'date' => 'required|date',
         ]);
         try {
-            $response = AccountService::updateAccount($request);
+            $response = TransactionService::updateTransaction($request);
             if ($response == null){
                 return response()->json([
                     'status' => false,
-                    'account' => 'Conta não localizada.'
+                    'message' => 'Conta não localizada.'
                 ], 404
                 );
             }
             return response()->json([
                 'status' => true,
-                'message' => 'Conta atualizada com sucesso',
-                'category' => $response
+                'message' => 'Transação atualizada com sucesso'
             ], 200
             );
         } catch (Exception $e) {
-            $message = "Erro ao atualizar conta: ". $e->getMessage();
+            $message = "Erro ao atualizar transação: ". $e->getMessage();
             return response()->json([
                 'status' => false,
                 'message' => $message
@@ -82,25 +76,24 @@ class TransactionController extends Controller
         }
     }
 
-    public function deleteAccount(Request $request)
+    public function deleteTransaction(Request $request)
     {
         try {
-            $response = AccountService::deleteAccount($request->id);
+            $response = TransactionService::deleteTransaction($request->id);
             if ($response == null){
                 return response()->json([
                     'status' => false,
-                    'account' => 'Conta não localizada.'
+                    'message' => 'Transação não localizada.'
                 ], 404
                 );
             }
             return response()->json([
                 'status' => true,
-                'message' => 'Conta deletada com sucesso',
-                'category' => $response
+                'message' => 'Transação deletada com sucesso',
             ], 200
             );
         } catch (Exception $e) {
-            $message = "Erro ao deletar conta: ". $e->getMessage();
+            $message = "Erro ao deletar transação: ". $e->getMessage();
             return response()->json([
                 'status' => false,
                 'message' => $message
