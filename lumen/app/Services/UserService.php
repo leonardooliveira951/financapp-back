@@ -37,7 +37,7 @@ class UserService
             'iat' => time(),
             'exp' => time() + 3600
         ], env('APP_KEY'));
-        return $token;
+        return [$token, $user];
     }
 
     public static function changeName($request)

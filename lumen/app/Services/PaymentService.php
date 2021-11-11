@@ -11,6 +11,7 @@ class PaymentService
 {
     public static function insertPayments($transaction)
     {
+
         $account = Account::where('id', $transaction->origin_account_id)->get()->first();
 
         if ($account->type == 'Cartão de Crédito')
@@ -18,59 +19,47 @@ class PaymentService
             $amount = $transaction->amount / $transaction->installment;
         }
 
-        $payment = new Payment();
-        $payment->amount = $transaction->amount;
-        $payment->date = $transaction->date;
-        $payment->transaction_id = $transaction->id;
-        $payment->save();
-
-        $current_date = Carbon::now()->toDateString();
-        if ($current_date == $transaction->date)
-        {
-            $account->update([
-                'balance' => $account->balance - $payment->amount
-            ]);
-            dd('fez o update');
-        }
+        self::default_payment($transaction, $account);
 
         dd('passou');
 
         return $payment;
     }
 
-
-
-
-
-    public static function deleteCategory($id)
+    public static function default_payment($transaction, $account)
     {
-        if(!Category::where('id',$id)->exists())
-        {
-            return null;
+        for ($x = 0; $x < $transaction->installment; $x++) {
+            $timestamp = strtotime("+{$x} month", strtotime($transaction->date));
+            $payment_date = date("Y/m/d", $timestamp);
+            $amount = $transaction->amount / $transaction->installment;
+            $transaction_id = $transaction->id;
+
+            $payment = self::schedule_payment($payment_date, $amount, $transaction_id);
+
+            $current_date = Carbon::now()->timestamp;
+            if (strtotime($payment_date) <= $current_date)
+            {
+                $account->update([
+                    'balance' => $account->balance - $amount
+                ]);
+//                $payment->update([
+//                    'status' => 'paid'
+//                ]); TODO quando inserir a coluna status pela migration, descomentar
+            }
         }
-        Category::where('id',$id)->update([
-            'active' => false
-        ]);
+        dd('opa, cheguei ao fim');
+
         return true;
     }
 
-    public static function updateCategory($request)
+    public static function schedule_payment($payment_date, $amount, $transaction_id)
     {
-        if(!Category::where('id',$request->id)->exists())
-        {
-            return null;
-        }
-        Category::where('id',$request->id)->update([
-            'name' => $request->all()['name'],
-            'type' => $request->all()['type'],
-            'color_id' => $request->all()['color_id']
-        ]);
-        return true;
+        $payment = new Payment();
+        $payment->amount = $amount;
+        $payment->date = $payment_date;
+        $payment->transaction_id = $transaction_id;
+//        $payment->status = 'scheduled'; TODO quando inserir a coluna status pela migration, descomentar
+        $payment->save();
+        return $payment;
     }
-
-    public static function getCategories()
-    {
-        return Category::all();
-    }
-
 }
