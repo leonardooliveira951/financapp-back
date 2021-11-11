@@ -51,6 +51,7 @@ class PaymentService
 
         return true;
     }
+
     public static function schedule_payment($payment_date, $amount, $transaction_id)
     {
         $payment = new Payment();

@@ -58,6 +58,11 @@ class UserController extends Controller
         ]);
         try {
             $response = UserService::loginUser($params);
+            $user = [
+                'id' => $response[1]->id,
+                'name' => $response[1]->name,
+                'email' => $response[1]->email
+            ];
             if ($response == null){
                 return response()->json([
                     'status' => false,
@@ -68,7 +73,8 @@ class UserController extends Controller
             return response()->json([
                 'status' => true,
                 'message' => 'Login realizado com sucesso!',
-                'token' => $response
+                'user' => $user,
+                'token' => $response[0]
             ], 200
             );
         } catch (Exception $e) {
