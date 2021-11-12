@@ -51,4 +51,8 @@ class UserService
         ]);
     }
 
+    public static function getUser($request)
+    {
+        return JWT::decode($request->bearerToken(), env('APP_KEY'), array('HS256'));
+    }
 }

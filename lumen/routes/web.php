@@ -16,7 +16,9 @@
 use Illuminate\Http\Request;
 
 $router->group(['middleware' => 'jwt'], function () use ($router) {
-
+    $router->get('/user/get', [
+        'uses' => 'UserController@getUser',
+    ]);
     $router->group(['prefix' => 'account'], function () use ($router) {
         $router->get('get/all', [
             'uses' => 'AccountController@getAccounts'
