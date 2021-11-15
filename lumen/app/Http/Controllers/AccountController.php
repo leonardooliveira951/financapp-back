@@ -20,9 +20,9 @@ class AccountController extends Controller
             'name' => 'required|string',
             'type' => 'required|string',
             'balance' => 'required|numeric',
-            'limit' => 'required|numeric',
-            'invoice_closing_date' => 'required|integer',
-            'invoice_due_date' => 'required|integer',
+            'limit' => 'numeric',
+            'invoice_closing_date' => 'integer',
+            'invoice_due_date' => 'integer',
             'color_id' => 'required|integer',
         ]);
         try {

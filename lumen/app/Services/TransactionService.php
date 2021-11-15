@@ -18,7 +18,7 @@ class TransactionService
         $transaction->type = $request['type'];
         $transaction->amount = $request['amount'];
         $transaction->date = $request['date'];
-        $transaction->installment = $request['installment'];
+        $transaction->installments = $request['installments'];
         $transaction->category_id = $request['category_id'];
         $transaction->origin_account_id = $request['origin_account_id'];
         $transaction->destiny_account_id = $request['destiny_account_id'];
