@@ -109,5 +109,28 @@ class UserController extends Controller
         }
     }
 
+    public function getUser(Request $request)
+    {
+        try {
+            $response = UserService::getUser($request);
+            $user = [
+                'id' => $response->id,
+                'name' => $response->name,
+                'email' => $response->email
+            ];
+            return response()->json([
+                'status' => true,
+                'message' => $user
+            ], 200
+            );
+        } catch (Exception $e) {
+            $message = "Erro ao buscar usuário: ". $e->getMessage();
+            return response()->json([
+                'status' => false,
+                'message' => $message
+            ],500
+            );
+        }
+    }
 
 }

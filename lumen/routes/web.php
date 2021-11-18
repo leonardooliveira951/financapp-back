@@ -17,6 +17,13 @@ use Illuminate\Http\Request;
 
 $router->group(['middleware' => 'jwt'], function () use ($router) {
 
+    $router->get('/user/get', [
+        'uses' => 'UserController@getUser',
+    ]);
+    $router->post('user/{id}/change-name', [
+        'uses' => 'UserController@changeName'
+    ]);
+
     $router->group(['prefix' => 'account'], function () use ($router) {
         $router->get('get/all', [
             'uses' => 'AccountController@getAccounts'
@@ -27,7 +34,7 @@ $router->group(['middleware' => 'jwt'], function () use ($router) {
         $router->post('update/{id}', [
             'uses' => 'AccountController@updateAccount'
         ]);
-        $router->delete('{id}', [
+        $router->delete('delete/{id}', [
             'uses' => 'AccountController@deleteAccount'
         ]);
     });
@@ -39,7 +46,7 @@ $router->group(['middleware' => 'jwt'], function () use ($router) {
         $router->post('insert', [
             'uses' => 'CategoryController@insertCategory'
         ]);
-        $router->delete('/{id}', [
+        $router->delete('delete/{id}', [
             'uses' => 'CategoryController@deleteCategory'
         ]);
         $router->post('update/{id}', [
@@ -61,10 +68,6 @@ $router->group(['middleware' => 'jwt'], function () use ($router) {
             'uses' => 'TransactionController@deleteTransaction'
         ]);
     });
-
-    $router->post('user/{id}/change-name', [
-        'uses' => 'UserController@changeName'
-    ]);
 
     $router->get('colors', [
         'uses' => 'ColorController@getColors'

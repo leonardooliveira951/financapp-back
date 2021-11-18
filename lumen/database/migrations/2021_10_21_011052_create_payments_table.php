@@ -16,9 +16,11 @@ class CreatePaymentsTable extends Migration
     {
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
-            $table->double('amount');
-            $table->timestamp('date');
             $table->foreignId('transaction_id')->constrained()->onDelete('cascade');
+            $table->timestamp('date');
+            $table->double('amount');
+            $table->integer('installment')->default(1);
+            $table->string('status')->default('scheduled');
             $table->timestamp('created_at')
                 ->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')
@@ -26,6 +28,7 @@ class CreatePaymentsTable extends Migration
         });
     }
 
+    
     /**
      * Reverse the migrations.
      *
