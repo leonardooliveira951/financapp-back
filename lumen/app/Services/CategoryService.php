@@ -63,7 +63,7 @@ class CategoryService
 
             array_push($response, $response_array);
         }
-        return Category::all();
+        return $response;
     }
 
 }
