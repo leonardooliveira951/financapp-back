@@ -44,7 +44,8 @@ class CategoryService
         Category::where('id',$request->id)->update([
             'name' => $request->all()['name'],
             'type' => $request->all()['type'],
-            'color_id' => $request->all()['color_id']
+            'color_id' => $request->all()['color_id'],
+            'active' => $request->all()['active']
         ]);
         return true;
     }
