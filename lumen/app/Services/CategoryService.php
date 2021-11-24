@@ -58,7 +58,7 @@ class CategoryService
             $response_array['id'] = $category['id'];
             $response_array['name'] = $category['name'];
             $response_array['type'] = $category['type'];
-            $response_array['color'] = Color::where('id', $category['color_id'])->get();
+            $response_array['color'] = Color::where('id', $category['color_id'])->get()->first();
             $response_array['active'] = ($category['active'] == 1) ? (true) : (false);
 
             array_push($response, $response_array);
