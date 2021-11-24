@@ -11,7 +11,8 @@ class CategoryService
     public static function insertCategory($request)
     {
         if(Category::where([
-            'name' => $request['name'], 
+            'name' => $request['name'],
+            'type' => $request['type'], 
             'user_id' => $request->user()['id']
         ])->exists())
         {
