@@ -40,13 +40,14 @@ class PaymentService
             $current_date = Carbon::now()->timestamp;
             if ((strtotime($payment_date) <= $current_date) && ($account->type != 'Cartão de crédito'))
             {
-                if ($transaction->type == 'incoming')
+                // TODO verificar a possibilidade de criar uma função de update passando as contas e valor
+                if ($transaction->type == 'income')
                 {
                     $account->update([
                         'balance' => $account->balance + $amount
                     ]);
                 }
-                if ($transaction->type == 'outcoming')
+                if ($transaction->type == 'outcome')
                 {
                     $account->update([
                         'balance' => $account->balance - $amount

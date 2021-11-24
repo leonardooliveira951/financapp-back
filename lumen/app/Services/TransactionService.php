@@ -41,6 +41,7 @@ class TransactionService
             'amount' => $request->all()['amount'],
             'date' => $request->all()['date']
         ]);
+        // TODO updatePayment() -> precisa verificar se já foi pago e alterar a data de todos os lançamentos referentes a essa transação
         return true;
     }
 
