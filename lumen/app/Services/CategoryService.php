@@ -10,7 +10,10 @@ class CategoryService
 {
     public static function insertCategory($request)
     {
-        if(Category::where('name',$request['name'])->exists())
+        if(Category::where([
+            'name' => $request['name'], 
+            'user_id' => $request->user()['id']
+        ])->exists())
         {
             return null;
         }
