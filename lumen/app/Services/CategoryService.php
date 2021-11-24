@@ -10,7 +10,11 @@ class CategoryService
 {
     public static function insertCategory($request)
     {
-        if(Category::where('name',$request['name'])->exists())
+        if(Category::where([
+            'name' => $request['name'],
+            'type' => $request['type'], 
+            'user_id' => $request->user()['id']
+        ])->exists())
         {
             return null;
         }
@@ -44,7 +48,8 @@ class CategoryService
         Category::where('id',$request->id)->update([
             'name' => $request->all()['name'],
             'type' => $request->all()['type'],
-            'color_id' => $request->all()['color_id']
+            'color_id' => $request->all()['color_id'],
+            'active' => $request->all()['active']
         ]);
         return true;
     }
