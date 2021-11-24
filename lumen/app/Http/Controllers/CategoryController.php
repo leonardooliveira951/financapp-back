@@ -17,7 +17,7 @@ class CategoryController extends Controller
     public function getCategories(Request $request)
     {
         try {
-            $response = CategoryService::getCategories();
+            $response = CategoryService::getCategories($request->user()['id']);
             return response()->json([
                 'status' => true,
                 'message' => 'Categorias carregadas com sucesso',

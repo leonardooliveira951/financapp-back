@@ -16,7 +16,7 @@ class ColorController extends Controller
     public function getColors(Request $request)
     {
         try {
-            $response = Color::all('name', 'hex_code');
+            $response = Color::all();
 
             return response()->json([
                 'status' => true,

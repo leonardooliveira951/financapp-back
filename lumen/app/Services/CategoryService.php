@@ -4,6 +4,7 @@
 namespace App\Services;
 
 use App\Models\Category;
+use App\Models\Color;
 
 class CategoryService
 {
@@ -48,8 +49,20 @@ class CategoryService
         return true;
     }
 
-    public static function getCategories()
+    public static function getCategories($user_id)
     {
+        $response = [];
+        $categories = Category::where('user_id', $user_id)->get();
+        foreach ($categories as $category)
+        {
+            $response_array['id'] = $category['id'];
+            $response_array['name'] = $category['name'];
+            $response_array['type'] = $category['type'];
+            $response_array['color'] = Color::where('id', $category['color_id'])->get();
+            $response_array['active'] = ($category['active'] == 1) ? (true) : (false);
+
+            array_push($response, $response_array);
+        }
         return Category::all();
     }
 
