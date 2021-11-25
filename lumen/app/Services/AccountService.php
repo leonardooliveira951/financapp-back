@@ -49,8 +49,11 @@ class AccountService
             'name' => $request->all()['name'],
             'type' => $request->all()['type'],
             'color_id' => $request->all()['color_id'],
+            'balance' => $request->all()['balance'],
+            'limit' => $request->all()['limit'],
             'invoice_closing_date' => $request->all()['invoice_closing_date'],
-            'invoice_due_date' => $request->all()['invoice_due_date']
+            'invoice_due_date' => $request->all()['invoice_due_date'],
+            'active' => $request->all()['active']
         ]);
         return true;
     }
