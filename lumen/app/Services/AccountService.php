@@ -10,7 +10,11 @@ class AccountService
 {
     public static function insertAccount($request)
     {
-        if(Account::where('name', $request->name)->exists())
+        if(Account::where([
+            'name' => $request['name'],
+            'type' => $request['type'], 
+            'user_id' => $request->user()['id']
+        ])->exists())
         {
             return null;
         }
