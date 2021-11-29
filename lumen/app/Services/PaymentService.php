@@ -5,6 +5,7 @@ namespace App\Services;
 
 use App\Models\Account;
 use App\Models\Payment;
+use App\Models\Transaction;
 use Carbon\Carbon;
 
 class PaymentService
@@ -17,16 +18,16 @@ class PaymentService
 
         if (!$destiny_account)
         {
-            $payment = self::do_payment($transaction, $origin_account);
+            $payment = self::payment_process($transaction, $origin_account);
             return $payment;
         }
 
-        $payment = self::do_transfer($transaction, $origin_account, $destiny_account);
+        $payment = self::transfer_process($transaction, $origin_account, $destiny_account);
 
         return $payment;
     }
 
-    public static function do_payment($transaction, $account)
+    public static function payment_process($transaction, $account)
     {
         for ($x = 0; $x < $transaction->installments; $x++) {
             $timestamp = strtotime("+{$x} month", strtotime($transaction->date));
@@ -40,20 +41,7 @@ class PaymentService
             $current_date = Carbon::now()->timestamp;
             if ((strtotime($payment_date) <= $current_date) && ($account->type != 'Cartão de crédito'))
             {
-                // TODO verificar a possibilidade de criar uma função de update passando as contas e valor
-                if ($transaction->type == 'income')
-                {
-                    $account->update([
-                        'balance' => $account->balance + $amount
-                    ]);
-                }
-                if ($transaction->type == 'outcome')
-                {
-                    $account->update([
-                        'balance' => $account->balance - $amount
-                    ]);
-
-                }
+                self::make_payment($amount, $account, $transaction->type);
                 $payment->update([
                     'status' => 'done'
                 ]);
@@ -62,14 +50,10 @@ class PaymentService
         return true;
     }
 
-    public static function do_transfer($transaction, $origin_account, $destiny_account)
+    public static function transfer_process($transaction, $origin_account, $destiny_account)
     {
-        $payment = new Payment();
-        $payment->amount = $transaction->amount;
-        $payment->date = $transaction->date;
-        $payment->transaction_id = $transaction->id;
-        $payment->save();
-
+        $payment = self::schedule_payment($transaction->date, $transaction->amount, $transaction->id, $transaction->installment);
+        dd($payment);
         $current_date = Carbon::now()->timestamp;
         if (strtotime($transaction->date) <= $current_date)
         {
@@ -97,4 +81,49 @@ class PaymentService
         $payment->save();
         return $payment;
     }
+
+    public static function make_scheduled_payment()
+    {
+
+        $current_date = Carbon::now();
+        $payments = Payment::where('date', '<=', $current_date)
+            ->where('status', 'scheduled')->get();
+
+        foreach ($payments as $payment)
+        {
+            $transaction = Transaction::where('id', $payment['transaction_id'])->get()->first();
+            $origin_account = Account::where('id', $transaction['origin_account_id'])->get()->first();
+            $destiny_account = Account::where('id', $transaction['destiny_account_id'])->get()->first();
+
+            if (($origin_account['type'] == 'Cartão de crédito') || ($destiny_account['type'] == 'Cartão de crédito'))
+            {
+                return false;
+            }
+
+            self::make_payment($payment->amount, $origin_account, $transaction->type);
+            $payment->update([
+                'status' => 'done'
+            ]);
+        }
+        return true;
+    }
+
+    private static function make_payment($amount, $account, $type)
+    {
+        if ($type == 'incoming')
+        {
+            $account->update([
+                'balance' => $account->balance + $amount
+            ]);
+            return true;
+        }
+        if ($type == 'outcoming')
+        {
+            $account->update([
+                'balance' => $account->balance - $amount
+            ]);
+            return true;
+        }
+    }
+
 }

@@ -39,7 +39,6 @@ class MakePayment extends Command
      */
     public function handle(PaymentService $payment_service)
     {
-        $this->info("Cron is working fine!");
         return $payment_service->make_scheduled_payment();
     }
 }
