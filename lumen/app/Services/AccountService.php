@@ -4,12 +4,17 @@
 namespace App\Services;
 
 use App\Models\Account;
+use App\Models\Color;
 
 class AccountService
 {
     public static function insertAccount($request)
     {
-        if(Account::where('name', $request->name)->exists())
+        if(Account::where([
+            'name' => $request['name'],
+            'type' => $request['type'], 
+            'user_id' => $request->user()['id']
+        ])->exists())
         {
             return null;
         }
@@ -48,15 +53,33 @@ class AccountService
             'name' => $request->all()['name'],
             'type' => $request->all()['type'],
             'color_id' => $request->all()['color_id'],
+            'balance' => $request->all()['balance'],
+            'limit' => $request->all()['limit'],
             'invoice_closing_date' => $request->all()['invoice_closing_date'],
-            'invoice_due_date' => $request->all()['invoice_due_date']
+            'invoice_due_date' => $request->all()['invoice_due_date'],
+            'active' => $request->all()['active']
         ]);
         return true;
     }
 
-    public static function getAccounts()
+    public static function getAccounts($user_id)
     {
-        return Account::all();
-    }
+        $response = [];
+        $accounts= Account::where('user_id', $user_id)->get();
+        foreach ($accounts as $account)
+        {
+            $response_array['id'] = $account['id'];
+            $response_array['name'] = $account['name'];
+            $response_array['type'] = $account['type'];
+            $response_array['color'] = Color::where('id', $account['color_id'])->get()->first();
+            $response_array['balance'] = $account['balance'];
+            $response_array['limit'] = $account['limit'];
+            $response_array['invoice_closing_date'] = $account['invoice_closing_date'];
+            $response_array['invoice_due_date'] = $account['invoice_due_date'];
+            $response_array['active'] = ($account['active'] == 1) ? (true) : (false);
 
+            array_push($response, $response_array);
+        }
+        return $response;
+    }
 }

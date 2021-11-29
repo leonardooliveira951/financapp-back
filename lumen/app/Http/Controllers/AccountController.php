@@ -14,6 +14,26 @@ class AccountController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
+    public function getAccounts(Request $request)
+    {
+        try {
+            $response = AccountService::getAccounts($request->user()['id']);
+            return response()->json([
+                'status' => true,
+                'message' => 'Contas carregadas com sucesso',
+                'accounts' => $response
+            ], 200
+            );
+        } catch (Exception $e) {
+            $message = "Erro ao buscar contas: ". $e->getMessage();
+            return response()->json([
+                'status' => false,
+                'message' => $message
+            ],500
+            );
+        }
+    }
+
     public function insertAccount(Request $request)
     {
         $this->validate($request, [
