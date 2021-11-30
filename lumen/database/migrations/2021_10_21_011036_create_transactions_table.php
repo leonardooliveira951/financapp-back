@@ -20,7 +20,7 @@ class CreateTransactionsTable extends Migration
             $table->string('description');
             $table->string('type');
             $table->double('amount');
-            $table->smallInteger('installments');
+            $table->smallInteger('installments')->default(1);
             $table->dateTime('date');
             $table->foreignId('category_id')->constrained();
             $table->unsignedBigInteger('origin_account_id');
