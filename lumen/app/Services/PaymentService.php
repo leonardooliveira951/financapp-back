@@ -52,18 +52,12 @@ class PaymentService
 
     public static function transfer_process($transaction, $origin_account, $destiny_account)
     {
-        $payment = self::schedule_payment($transaction->date, $transaction->amount, $transaction->id, $transaction->installment);
-        dd($payment);
+        $payment = self::schedule_payment($transaction->date, $transaction->amount, $transaction->id, $transaction->installments);
+
         $current_date = Carbon::now()->timestamp;
         if (strtotime($transaction->date) <= $current_date)
         {
-            $origin_account->update([
-                'balance' => $origin_account->balance - $payment->amount
-            ]);
-            $destiny_account->update([
-                'balance' => $destiny_account->balance + $payment->amount
-            ]);
-
+            self::make_transfer($origin_account, $destiny_account, $payment->amount);
             $payment->update([
                 'status' => 'done'
             ]);
@@ -84,7 +78,6 @@ class PaymentService
 
     public static function make_scheduled_payment()
     {
-
         $current_date = Carbon::now();
         $payments = Payment::where('date', '<=', $current_date)
             ->where('status', 'scheduled')->get();
@@ -99,8 +92,14 @@ class PaymentService
             {
                 return false;
             }
-
-            self::make_payment($payment->amount, $origin_account, $transaction->type);
+            if (!$destiny_account)
+            {
+                self::make_payment($payment->amount, $origin_account, $transaction->type);
+                $payment->update([
+                    'status' => 'done'
+                ]);
+            }
+            self::make_transfer($origin_account, $destiny_account, $payment->amount);
             $payment->update([
                 'status' => 'done'
             ]);
@@ -110,20 +109,30 @@ class PaymentService
 
     private static function make_payment($amount, $account, $type)
     {
-        if ($type == 'incoming')
+        if ($type == 'income')
         {
             $account->update([
                 'balance' => $account->balance + $amount
             ]);
-            return true;
         }
-        if ($type == 'outcoming')
+        if ($type == 'outcome')
         {
             $account->update([
                 'balance' => $account->balance - $amount
             ]);
-            return true;
         }
+        return true;
+    }
+
+    private static function make_transfer($origin_account, $destiny_account, $amount)
+    {
+        $origin_account->update([
+            'balance' => $origin_account->balance - $amount
+        ]);
+        $destiny_account->update([
+            'balance' => $destiny_account->balance + $amount
+        ]);
+        return true;
     }
 
 }

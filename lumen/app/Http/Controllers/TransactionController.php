@@ -21,7 +21,7 @@ class TransactionController extends Controller
             'type' => 'required|string',
             'amount' => 'required|numeric',
             'date' => 'required|date',
-            'installments' => 'required|integer',
+            'installments' => 'integer',
             'category_id' => 'required|integer',
             'origin_account_id' => 'required|integer',
             'destiny_account_id' => 'integer'
