@@ -84,6 +84,7 @@ class PaymentService
 
         foreach ($payments as $payment)
         {
+            // TODO aqui é interessante fazer um JOIN entre as tabelas para pegar as infos necessárias
             $transaction = Transaction::where('id', $payment['transaction_id'])->get()->first();
             $origin_account = Account::where('id', $transaction['origin_account_id'])->get()->first();
             $destiny_account = Account::where('id', $transaction['destiny_account_id'])->get()->first();
