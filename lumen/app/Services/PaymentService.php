@@ -4,6 +4,7 @@
 namespace App\Services;
 
 use App\Models\Account;
+use App\Models\Invoice;
 use App\Models\Payment;
 use App\Models\Transaction;
 use Carbon\Carbon;
@@ -38,8 +39,21 @@ class PaymentService
 
             $payment = self::schedule_payment($payment_date, $amount, $transaction_id, $installment);
 
+            if ($account->type == 'credit_card'){
+                $invoice = Invoice::where('account_id', $account->id)
+                    ->where('due_date', $transaction->invoice_first_charge);
+                if (!$invoice){
+                    // TODO implementar o método insert_new_invoice com o mês e ano vindos em $transaction->invoice_first_charge
+                    self::insert_new_invoice();
+                }
+                // TODO faz o update do valor da fatura somando com o $payment->amount
+                $invoice->update([
+                    'amount' => $invoice->amount + $payment->amount
+                ]);
+            }
+
             $current_date = Carbon::now()->timestamp;
-            if ((strtotime($payment_date) <= $current_date) && ($account->type != 'Cartão de crédito'))
+            if ((strtotime($payment_date) <= $current_date) && ($account->type != 'credit_card'))
             {
                 self::make_payment($amount, $account, $transaction->type);
                 $payment->update([
