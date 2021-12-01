@@ -25,6 +25,7 @@ class CreateTransactionsTable extends Migration
             $table->foreignId('category_id')->constrained();
             $table->unsignedBigInteger('origin_account_id');
             $table->unsignedBigInteger('destiny_account_id')->nullable();
+            $table->dateTime('invoice_first_charge')->nullable();
             $table->foreign('origin_account_id')->references('id')->on('accounts');
             $table->foreign('destiny_account_id')->references('id')->on('accounts');
             $table->timestamp('created_at')
