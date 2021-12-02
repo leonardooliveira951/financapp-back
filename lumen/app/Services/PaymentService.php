@@ -13,7 +13,6 @@ class PaymentService
 {
     public static function insertPayments($transaction)
     {
-
         $origin_account = Account::where('id', $transaction->origin_account_id)->get()->first();
         $destiny_account = Account::where('id', $transaction->destiny_account_id)->get()->first();
 
@@ -40,16 +39,7 @@ class PaymentService
             $payment = self::schedule_payment($payment_date, $amount, $transaction_id, $installment);
 
             if ($account->type == 'credit_card'){
-                $invoice = Invoice::where('account_id', $account->id)
-                    ->where('due_date', $transaction->invoice_first_charge);
-                if (!$invoice){
-                    // TODO implementar o método insert_new_invoice com o mês e ano vindos em $transaction->invoice_first_charge
-                    self::insert_new_invoice();
-                }
-                // TODO faz o update do valor da fatura somando com o $payment->amount
-                $invoice->update([
-                    'amount' => $invoice->amount + $payment->amount
-                ]);
+                InvoiceService::handle_invoice($transaction, $account, $payment);
             }
 
             $current_date = Carbon::now()->timestamp;
