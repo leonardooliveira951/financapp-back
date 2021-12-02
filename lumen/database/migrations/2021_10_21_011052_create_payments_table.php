@@ -20,7 +20,7 @@ class CreatePaymentsTable extends Migration
             $table->dateTime('date');
             $table->double('amount');
             $table->integer('installment')->default(1);
-            $table->foreignId('invoice_id')->constrained()->onDelete('cascade');
+            $table->foreignId('invoice_id')->nullable()->constrained()->onDelete('cascade');
             $table->string('status')->default('scheduled');
             $table->index('status');
             $table->timestamp('created_at')
