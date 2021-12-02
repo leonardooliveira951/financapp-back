@@ -36,11 +36,11 @@ class PaymentService
             $transaction_id = $transaction->id;
             $installment = $x + 1;
 
-            $payment = self::schedule_payment($payment_date, $amount, $transaction_id, $installment);
-
             if ($account->type == 'credit_card'){
-                InvoiceService::handle_invoice($transaction, $account, $payment);
+                $invoice = InvoiceService::handle_invoice($transaction, $account, $amount);
             }
+
+            $payment = self::schedule_payment($payment_date, $amount, $transaction_id, $installment, $invoice->id);
 
             $current_date = Carbon::now()->timestamp;
             if ((strtotime($payment_date) <= $current_date) && ($account->type != 'credit_card'))
@@ -69,13 +69,14 @@ class PaymentService
         return true;
     }
 
-    public static function schedule_payment($payment_date, $amount, $transaction_id, $installment)
+    public static function schedule_payment($payment_date, $amount, $transaction_id, $installment, $invoice_id = null)
     {
         $payment = new Payment();
         $payment->amount = $amount;
         $payment->date = $payment_date;
         $payment->transaction_id = $transaction_id;
         $payment->installment = $installment;
+        $payment->invoice_id = $invoice_id;
         $payment->save();
         return $payment;
     }

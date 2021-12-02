@@ -22,10 +22,9 @@ class TransactionService
         $transaction->category_id = $request['category_id'];
         $transaction->origin_account_id = $request['origin_account_id'];
         $transaction->destiny_account_id = $request['destiny_account_id'];
-
-        $invoice_first_charge = strtotime($request['invoice_first_charge']);
-        $transaction->invoice_first_charge = date("Y/m", $invoice_first_charge);
-
+//        $invoice_first_charge = strtotime($request['invoice_first_charge']);
+//        $transaction->invoice_first_charge = date("Y/m", $invoice_first_charge);
+        $transaction->invoice_first_charge = $request['invoice_first_charge'];
         $transaction->save();
 
         PaymentService::insertPayments($transaction);
