@@ -39,7 +39,7 @@ class PaymentService
                 $due_date = (new Carbon($transaction->invoice_first_charge))->day($account->invoice_due_date);
                 $due_date = strtotime("+{$x} month", strtotime($due_date));
                 $due_date = date("Y/m/d", $due_date);
-                $invoice = InvoiceService::handle_invoice($due_date, $account, $amount);
+                $invoice = InvoiceService::handle_invoice($due_date, $account->id, $amount);
             }
 
             $installment = $x + 1;
