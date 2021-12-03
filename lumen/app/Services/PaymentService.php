@@ -30,16 +30,19 @@ class PaymentService
     public static function payment_process($transaction, $account)
     {
         for ($x = 0; $x < $transaction->installments; $x++) {
-            $timestamp = strtotime("+{$x} month", strtotime($transaction->date));
-            $payment_date = date("Y/m/d", $timestamp);
+            $transaction_date_timestamp = strtotime("+{$x} month", strtotime($transaction->date));
+            $payment_date = date("Y/m/d", $transaction_date_timestamp);
             $amount = $transaction->amount / $transaction->installments;
             $transaction_id = $transaction->id;
-            $installment = $x + 1;
 
             if ($account->type == 'credit_card'){
-                $invoice = InvoiceService::handle_invoice($transaction, $account, $amount);
+                $due_date = (new Carbon($transaction->invoice_first_charge))->day($account->invoice_due_date);
+                $due_date = strtotime("+{$x} month", strtotime($due_date));
+                $due_date = date("Y/m/d", $due_date);
+                $invoice = InvoiceService::handle_invoice($due_date, $account, $amount);
             }
 
+            $installment = $x + 1;
             $payment = self::schedule_payment($payment_date, $amount, $transaction_id, $installment, $invoice->id);
 
             $current_date = Carbon::now()->timestamp;

@@ -11,12 +11,8 @@ use Carbon\Carbon;
 
 class InvoiceService
 {
-    public static function handle_invoice($transaction, $account, $amount)
+    public static function handle_invoice($due_date, $account, $amount)
     {
-        // TODO acho que fazer o mesmo for do payments resolve
-        $due_date = (new Carbon($transaction->invoice_first_charge))->day($account->invoice_due_date);
-        $due_date = date("Y/m/d", strtotime($due_date));
-
         $invoice = Invoice::where('account_id', $account->id)
             ->where('due_date', $due_date)->get()->first();
 
