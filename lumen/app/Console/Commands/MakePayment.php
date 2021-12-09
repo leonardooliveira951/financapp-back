@@ -39,6 +39,6 @@ class MakePayment extends Command
      */
     public function handle(PaymentService $payment_service)
     {
-        return $payment_service->make_scheduled_payment();
+        return $payment_service->makeScheduledPayment();
     }
 }

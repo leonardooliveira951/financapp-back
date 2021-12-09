@@ -18,16 +18,16 @@ class PaymentService
 
         if (!$destiny_account)
         {
-            $payment = self::payment_process($transaction, $origin_account);
+            $payment = self::paymentProcess($transaction, $origin_account);
             return $payment;
         }
 
-        $payment = self::transfer_process($transaction, $origin_account, $destiny_account);
+        $payment = self::transferProcess($transaction, $origin_account, $destiny_account);
 
         return $payment;
     }
 
-    public static function payment_process($transaction, $account)
+    public static function paymentProcess($transaction, $account)
     {
         for ($x = 0; $x < $transaction->installments; $x++) {
             $transaction_date_timestamp = strtotime("+{$x} month", strtotime($transaction->date));
@@ -39,16 +39,16 @@ class PaymentService
                 $due_date = (new Carbon($transaction->invoice_first_charge))->day($account->invoice_due_date);
                 $due_date = strtotime("+{$x} month", strtotime($due_date));
                 $due_date = date("Y/m/d", $due_date);
-                $invoice = InvoiceService::handle_invoice($due_date, $account->id, $amount);
+                $invoice = InvoiceService::handleInvoice($due_date, $account->id, $amount);
             }
 
             $installment = $x + 1;
-            $payment = self::schedule_payment($payment_date, $amount, $transaction_id, $installment, $invoice->id);
+            $payment = self::schedulePayment($payment_date, $amount, $transaction_id, $installment, $invoice->id);
 
             $current_date = Carbon::now()->timestamp;
             if ((strtotime($payment_date) <= $current_date) && ($account->type != 'credit_card'))
             {
-                self::make_payment($amount, $account, $transaction->type);
+                self::makePayment($amount, $account, $transaction->type);
                 $payment->update([
                     'status' => 'done'
                 ]);
@@ -57,14 +57,14 @@ class PaymentService
         return true;
     }
 
-    public static function transfer_process($transaction, $origin_account, $destiny_account)
+    public static function transferProcess($transaction, $origin_account, $destiny_account)
     {
-        $payment = self::schedule_payment($transaction->date, $transaction->amount, $transaction->id, $transaction->installments);
+        $payment = self::schedulePayment($transaction->date, $transaction->amount, $transaction->id, $transaction->installments);
 
         $current_date = Carbon::now()->timestamp;
         if (strtotime($transaction->date) <= $current_date)
         {
-            self::make_transfer($origin_account, $destiny_account, $payment->amount);
+            self::makeTransfer($origin_account, $destiny_account, $payment->amount);
             $payment->update([
                 'status' => 'done'
             ]);
@@ -72,7 +72,7 @@ class PaymentService
         return true;
     }
 
-    public static function schedule_payment($payment_date, $amount, $transaction_id, $installment, $invoice_id = null)
+    public static function schedulePayment($payment_date, $amount, $transaction_id, $installment, $invoice_id = null)
     {
         $payment = new Payment();
         $payment->amount = $amount;
@@ -84,7 +84,7 @@ class PaymentService
         return $payment;
     }
 
-    public static function make_scheduled_payment()
+    public static function makeScheduledPayment()
     {
         $current_date = Carbon::now();
         $payments = Payment::where('date', '<=', $current_date)
@@ -103,12 +103,12 @@ class PaymentService
             }
             if (!$destiny_account)
             {
-                self::make_payment($payment->amount, $origin_account, $transaction->type);
+                self::makePayment($payment->amount, $origin_account, $transaction->type);
                 $payment->update([
                     'status' => 'done'
                 ]);
             }
-            self::make_transfer($origin_account, $destiny_account, $payment->amount);
+            self::makeTransfer($origin_account, $destiny_account, $payment->amount);
             $payment->update([
                 'status' => 'done'
             ]);
@@ -116,7 +116,7 @@ class PaymentService
         return true;
     }
 
-    private static function make_payment($amount, $account, $type)
+    private static function makePayment($amount, $account, $type)
     {
         if ($type == 'income')
         {
@@ -133,7 +133,7 @@ class PaymentService
         return true;
     }
 
-    private static function make_transfer($origin_account, $destiny_account, $amount)
+    private static function makeTransfer($origin_account, $destiny_account, $amount)
     {
         $origin_account->update([
             'balance' => $origin_account->balance - $amount

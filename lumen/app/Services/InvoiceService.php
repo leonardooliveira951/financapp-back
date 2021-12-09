@@ -11,13 +11,13 @@ use Carbon\Carbon;
 
 class InvoiceService
 {
-    public static function handle_invoice($due_date, $account_id, $amount)
+    public static function handleInvoice($due_date, $account_id, $amount)
     {
         $invoice = Invoice::where('account_id', $account_id)
             ->where('due_date', $due_date)->get()->first();
 
         if (!$invoice){
-            return self::insert_new_invoice($account_id, $amount, $due_date);
+            return self::insertNewInvoice($account_id, $amount, $due_date);
         }
 
         $invoice->update([
@@ -26,7 +26,7 @@ class InvoiceService
         return $invoice;
     }
 
-    private static function insert_new_invoice($account_id, $amount, $due_date)
+    private static function insertNewInvoice($account_id, $amount, $due_date)
     {
         $invoice = new Invoice();
         $invoice->account_id = $account_id;
@@ -36,4 +36,16 @@ class InvoiceService
 
         return $invoice;
     }
+
+    public static function getInvoice($request)
+    {
+        $account = Account::where('id', $request['account_id']);
+
+        $due_date = (new Carbon($request['due_date']))->day($account->invoice_due_date);
+        $due_date = date("Y/m/d", $due_date);
+
+        return Invoice::where('account_id', $account->id)
+            ->where('due_date', $due_date)->get()->first();
+    }
+
 }
