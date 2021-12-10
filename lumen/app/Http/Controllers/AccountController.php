@@ -74,8 +74,8 @@ class AccountController extends Controller
         $this->validate($request, [
             'name' => 'required|string',
             'type' => 'required|string',
-            'invoice_closing_date' => 'required|integer',
-            'invoice_due_date' => 'required|integer',
+            'invoice_closing_date' => 'integer',
+            'invoice_due_date' => 'integer',
             'color_id' => 'required|integer'
         ]);
         try {
