@@ -40,7 +40,6 @@ class AccountController extends Controller
             'name' => 'required|string',
             'type' => 'required|string',
             'balance' => 'required|numeric',
-            'limit' => 'numeric',
             'invoice_closing_date' => 'integer',
             'invoice_due_date' => 'integer',
             'color_id' => 'required|integer',
