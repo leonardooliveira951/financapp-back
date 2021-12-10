@@ -7,7 +7,6 @@ use App\Models\Account;
 use App\Models\Invoice;
 use App\Models\Payment;
 use App\Models\Transaction;
-use Carbon\Carbon;
 
 class InvoiceService
 {
@@ -39,9 +38,9 @@ class InvoiceService
 
     public static function getInvoice($request)
     {
-        $account = Account::where('id', $request['account_id']);
+        $account = Account::where('id', $request->account_id)->get()->first();
 
-        $due_date = (new Carbon($request['due_date']))->day($account->invoice_due_date);
+        $due_date = strtotime($request->period . "-" . $account->invoice_due_date);
         $due_date = date("Y/m/d", $due_date);
 
         return Invoice::where('account_id', $account->id)

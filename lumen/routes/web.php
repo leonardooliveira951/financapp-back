@@ -70,7 +70,7 @@ $router->group(['middleware' => 'jwt'], function () use ($router) {
     });
 
     $router->group(['prefix' => 'invoice'], function () use ($router) {
-        $router->get('get', [
+        $router->get('get/{account_id}/{period}', [
             'uses' => 'InvoiceController@getInvoice'
         ]);
     });
