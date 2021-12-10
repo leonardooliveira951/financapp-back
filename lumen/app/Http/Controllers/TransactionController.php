@@ -102,4 +102,31 @@ class TransactionController extends Controller
         }
     }
 
+    public function getTransactionByDate(Request $request)
+    {
+        try {
+            $response = TransactionService::getTransactionByDate($request->period);
+            if ($response == null){
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Nenhuma transação localizada.'
+                ], 404
+                );
+            }
+            return response()->json([
+                'status' => true,
+                'message' => 'Transações listadas com sucesso',
+                'transactions' => $response,
+            ], 200
+            );
+        } catch (Exception $e) {
+            $message = "Erro ao listar transações: ". $e->getMessage();
+            return response()->json([
+                'status' => false,
+                'message' => $message
+            ],500
+            );
+        }
+    }
+
 }

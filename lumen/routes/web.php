@@ -55,8 +55,8 @@ $router->group(['middleware' => 'jwt'], function () use ($router) {
     });
 
     $router->group(['prefix' => 'transaction'], function () use ($router) {
-        $router->get('summary', [
-            'uses' => 'TransactionController@getTransactionSummary'
+        $router->get('get/{period}', [
+            'uses' => 'TransactionController@getTransactionByDate'
         ]);
         $router->post('insert', [
             'uses' => 'TransactionController@insertTransaction'
@@ -68,6 +68,13 @@ $router->group(['middleware' => 'jwt'], function () use ($router) {
             'uses' => 'TransactionController@deleteTransaction'
         ]);
     });
+
+    $router->group(['prefix' => 'invoice'], function () use ($router) {
+        $router->get('get', [
+            'uses' => 'InvoiceController@getInvoice'
+        ]);
+    });
+
 
     $router->get('colors', [
         'uses' => 'ColorController@getColors'
