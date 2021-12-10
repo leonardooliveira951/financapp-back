@@ -19,7 +19,7 @@ class CreateInvoicesTable extends Migration
             $table->foreignId('account_id')->constrained()->onDelete('cascade');
             $table->dateTime('due_date');
             $table->double('amount');
-            $table->string('status')->default(null)->nullable();
+            $table->string('status')->default('open');
             $table->timestamp('created_at')
                 ->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')
