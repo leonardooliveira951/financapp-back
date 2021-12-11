@@ -34,16 +34,17 @@ class PaymentService
             $payment_date = date("Y/m/d", $transaction_date_timestamp);
             $amount = $transaction->amount / $transaction->installments;
             $transaction_id = $transaction->id;
+            $installment = $x + 1;
 
             if ($account->type == 'credit_card'){
                 $due_date = (new Carbon($transaction->invoice_first_charge))->day($account->invoice_due_date);
                 $due_date = strtotime("+{$x} month", strtotime($due_date));
                 $due_date = date("Y/m/d", $due_date);
                 $invoice = InvoiceService::handleInvoice($due_date, $account->id, $amount);
+                self::schedulePayment($payment_date, $amount, $transaction_id, $installment, $invoice->id);
+                return true;
             }
-
-            $installment = $x + 1;
-            $payment = self::schedulePayment($payment_date, $amount, $transaction_id, $installment, $invoice->id);
+            $payment = self::schedulePayment($payment_date, $amount, $transaction_id, $installment);
 
             $current_date = Carbon::now()->timestamp;
             if ((strtotime($payment_date) <= $current_date) && ($account->type != 'credit_card'))
@@ -72,7 +73,7 @@ class PaymentService
         return true;
     }
 
-    public static function schedulePayment($payment_date, $amount, $transaction_id, $installment, $invoice_id = null)
+    public static function schedulePayment($payment_date, $amount, $transaction_id, $installment, $invoice_id = NULL)
     {
         $payment = new Payment();
         $payment->amount = $amount;
