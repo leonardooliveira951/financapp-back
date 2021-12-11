@@ -73,6 +73,9 @@ $router->group(['middleware' => 'jwt'], function () use ($router) {
         $router->get('get/{account_id}/{period}', [
             'uses' => 'InvoiceController@getInvoice'
         ]);
+        $router->post('payment', [
+            'uses' => 'InvoiceController@makeInvoicePayment'
+        ]);
     });
 
 
