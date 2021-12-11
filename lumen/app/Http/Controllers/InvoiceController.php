@@ -33,4 +33,29 @@ class InvoiceController extends Controller
         }
     }
 
+    public function makeInvoicePayment(Request $request)
+    {
+        $this->validate($request, [
+            'invoice_id' => 'required|integer',
+            'paying_account' => 'required|integer',
+            'amount' => 'required|numeric',
+        ]);
+
+        try {
+            $response = InvoiceService::makeInvoicePayment($request);
+            return response()->json([
+                'status' => true,
+                'message' => $response
+            ], 200
+            );
+        } catch (Exception $e) {
+            $message = "Erro ao pagar fatura: ". $e->getMessage();
+            return response()->json([
+                'status' => false,
+                'message' => $message
+            ],500
+            );
+        }
+    }
+
 }
