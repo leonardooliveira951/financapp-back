@@ -6,7 +6,6 @@ namespace App\Services;
 use App\Models\Account;
 use App\Models\Invoice;
 use App\Models\Payment;
-use App\Models\Transaction;
 
 class InvoiceService
 {
@@ -45,6 +44,44 @@ class InvoiceService
 
         return Invoice::where('account_id', $account->id)
             ->where('due_date', $due_date)->get()->first();
+    }
+
+    public static function makeInvoicePayment($request)
+    {
+        $invoice = Invoice::where('id', $request->invoice_id)->get()->first();
+        $paying_account = Account::where('id', $request->paying_account)->get()->first();
+
+        if (!$invoice || !$paying_account){
+            return 'Fatura ou conta não encontrados';
+
+        }
+        if ($invoice->status != 'closed'){
+            return 'Fatura não está fechada';
+        }
+
+        $payment_difference = $invoice->amount - $request->amount;
+
+        if ($payment_difference != 0){
+            $due_date = strtotime("+1 month", strtotime($invoice->due_date));
+            $due_date = date("Y/m/d", $due_date);
+
+            self::handleInvoice($due_date, $invoice->account_id, $payment_difference);
+        }
+
+        TransactionService::insertInvoiceTransaction($invoice, $paying_account, $request->amount, $request->payment_date);
+
+        $invoice_payments = Payment::where('invoice_id', $invoice->id)->get();
+
+        foreach ($invoice_payments as $payment){
+            $payment->update([
+                'status' => 'done'
+            ]);
+        }
+        $invoice->update([
+            'status' => 'paid'
+        ]);
+
+        return 'Fatura paga com sucesso';
     }
 
 }
