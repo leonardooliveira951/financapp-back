@@ -24,8 +24,6 @@ class TransactionService
         $transaction->category_id = $request['category_id'];
         $transaction->origin_account_id = $request['origin_account_id'];
         $transaction->destiny_account_id = $request['destiny_account_id'];
-//        $invoice_first_charge = strtotime($request['invoice_first_charge']);
-//        $transaction->invoice_first_charge = date("Y/m", $invoice_first_charge);
         $transaction->invoice_first_charge = $request['invoice_first_charge'];
         $transaction->save();
 
@@ -88,4 +86,26 @@ class TransactionService
         return $response;
     }
 
+    public static function insertInvoiceTransaction($invoice, $account, $amount, $payment_date)
+    {
+        define("CREDIT_CARD_PAYMENT_CATEGORY", 1);
+        $due_date = date("m/Y", strtotime($invoice->due_date));
+
+        $transaction = new Transaction();
+        $transaction->user_id = $account->user_id;
+        $transaction->description = "Pagamento da fatura de {$due_date} do cartão {$account->name}";
+        $transaction->type = "outcome";
+        $transaction->amount = $amount;
+        $transaction->date = $payment_date;
+        $transaction->installments = 1;
+        $transaction->category_id = CREDIT_CARD_PAYMENT_CATEGORY;
+        $transaction->origin_account_id = $account->id;
+        $transaction->destiny_account_id = NULL;
+        $transaction->invoice_first_charge = NULL;
+        $transaction->save();
+
+        PaymentService::insertPayments($transaction);
+
+        return $transaction;
+    }
 }
