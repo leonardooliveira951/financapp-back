@@ -72,7 +72,7 @@ class TransactionService
         foreach ($payments as $payment){
             $transaction = Transaction::where('id', $payment->transaction_id)->get()->first();
 
-            $response_array['transaction_id'] = $transaction->id;
+            $response_array['id'] = $transaction->id;
             $response_array['description'] = $transaction->description;
             $response_array['category'] = Category::where('id', $transaction->category_id)->get()->first();
             $response_array['account'] = Account::where('id', $transaction->origin_account_id)->get()->first();
