@@ -105,7 +105,7 @@ class TransactionController extends Controller
     public function getTransactionByDate(Request $request)
     {
         try {
-            $response = TransactionService::getTransactionByDate($request->period);
+            $response = TransactionService::getTransactionByDate($request);
             if ($response == null){
                 return response()->json([
                     'status' => false,
