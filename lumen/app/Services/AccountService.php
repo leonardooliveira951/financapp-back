@@ -24,7 +24,6 @@ class AccountService
         $account->type = $request->type;
         $account->balance = $request->balance;
         $account->color_id = $request->color_id;
-        $account->limit = $request->limit;
         $account->invoice_closing_date = $request->invoice_closing_date;
         $account->invoice_due_date = $request->invoice_due_date;
         $account->save();
@@ -54,7 +53,6 @@ class AccountService
             'type' => $request->all()['type'],
             'color_id' => $request->all()['color_id'],
             'balance' => $request->all()['balance'],
-            'limit' => $request->all()['limit'],
             'invoice_closing_date' => $request->all()['invoice_closing_date'],
             'invoice_due_date' => $request->all()['invoice_due_date'],
             'active' => $request->all()['active']
@@ -73,7 +71,6 @@ class AccountService
             $response_array['type'] = $account['type'];
             $response_array['color'] = Color::where('id', $account['color_id'])->get()->first();
             $response_array['balance'] = $account['balance'];
-            $response_array['limit'] = $account['limit'];
             $response_array['invoice_closing_date'] = $account['invoice_closing_date'];
             $response_array['invoice_due_date'] = $account['invoice_due_date'];
             $response_array['active'] = ($account['active'] == 1) ? (true) : (false);
