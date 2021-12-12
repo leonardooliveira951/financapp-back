@@ -12,7 +12,7 @@ class CategoryService
     {
         if(Category::where([
             'name' => $request['name'],
-            'type' => $request['type'], 
+            'type' => $request['type'],
             'user_id' => $request->user()['id']
         ])->exists())
         {
