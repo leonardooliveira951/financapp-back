@@ -8,6 +8,7 @@ use App\Models\Category;
 use App\Models\Payment;
 use App\Models\Transaction;
 use App\Services\PaymentService;
+use Illuminate\Support\Facades\DB;
 
 
 class TransactionService
@@ -57,29 +58,31 @@ class TransactionService
         return Transaction::where('id',$id)->delete();
     }
 
-    public static function getTransactionByDate($period)
+    public static function getTransactionByDate($request)
     {
         $response = [];
 
-        $month = date("m", strtotime($period));
-        $year = date("Y", strtotime($period));
+        $month = date("m", strtotime($request->period));
+        $year = date("Y", strtotime($request->period));
 
-        $payments = Payment::whereRaw(
-            'MONTH(date) = ' . $month)
-            ->whereRaw('YEAR(date) = ' . $year)
+
+        $payments = DB::table('payments')
+            ->join('transactions', 'payments.transaction_id', '=', 'transactions.id')
+            ->select('transactions.*', 'payments.*')
+            ->whereRaw('transactions.user_id = ' . $request->user()['id'])
+            ->whereRaw('MONTH(payments.date) = ' . $month)
+            ->whereRaw('YEAR(payments.date) = ' . $year)
             ->get();
 
         foreach ($payments as $payment){
-            $transaction = Transaction::where('id', $payment->transaction_id)->get()->first();
-
-            $response_array['id'] = $transaction->id;
-            $response_array['description'] = $transaction->description;
-            $response_array['category'] = Category::where('id', $transaction->category_id)->get()->first();
-            $response_array['account'] = Account::where('id', $transaction->origin_account_id)->get()->first();
+            $response_array['id'] = $payment->transaction_id;
+            $response_array['description'] = $payment->description;
+            $response_array['category'] = Category::where('id', $payment->category_id)->get()->first();
+            $response_array['account'] = Account::where('id', $payment->origin_account_id)->get()->first();
             $response_array['date'] = $payment->date;
             $response_array['amount'] = $payment->amount;
-            $response_array['installment'] = $payment->installment . "/" . $transaction->installments;
-            $response_array['type'] = $transaction->type;
+            $response_array['installment'] = $payment->installment . "/" . $payment->installments;
+            $response_array['type'] = $payment->type;
 
             array_push($response, $response_array);
         }
