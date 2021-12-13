@@ -6,8 +6,11 @@ namespace App\Services;
 use App\Models\Category;
 use App\Models\Color;
 
+
 class CategoryService
 {
+    const CREDIT_CARD_PAYMENT_CATEGORY = 1;
+
     public static function insertCategory($request)
     {
         if(Category::where([
