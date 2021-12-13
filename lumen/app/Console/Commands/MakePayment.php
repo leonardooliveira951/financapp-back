@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Services\InvoiceService;
 use App\Services\PaymentService;
 use Illuminate\Console\Command;
 
@@ -37,8 +38,9 @@ class MakePayment extends Command
      *
      * @return mixed
      */
-    public function handle(PaymentService $payment_service)
+    public function handle(PaymentService $payment_service, InvoiceService $invoice_service)
     {
+        $invoice_service->changeInvoiceStatusToClosed();
         return $payment_service->makeScheduledPayment();
     }
 }
