@@ -8,6 +8,7 @@ use App\Models\Invoice;
 use App\Models\Payment;
 use App\Models\Transaction;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class PaymentService
 {
@@ -143,6 +144,49 @@ class PaymentService
             'balance' => $destiny_account->balance + $amount
         ]);
         return true;
+    }
+
+    public static function getSummaryByDate($request)
+    {
+        $response = [];
+        $outcome_total_amount = 0;
+        $income_total_amount = 0;
+
+        $month = date("m", strtotime($request->period));
+        $year = date("Y", strtotime($request->period));
+
+        $payments = DB::table('payments')
+            ->join('transactions', 'payments.transaction_id', '=', 'transactions.id')
+            ->select('transactions.type',
+                'transactions.category_id',
+                'payments.*')
+            ->whereRaw('transactions.user_id = ' . $request->user()['id'])
+            ->whereRaw('MONTH(payments.date) = ' . $month)
+            ->whereRaw('YEAR(payments.date) = ' . $year)
+            ->get();
+
+        foreach ($payments as $payment) {
+//            if ($payment->category_id == CategoryService::CREDIT_CARD_PAYMENT_CATEGORY){
+//                continue;
+//            }
+
+            switch ($payment->type) {
+                case "outcome":
+                    $outcome_total_amount += $payment->amount;
+                    break;
+                case "income":
+                    $income_total_amount += $payment->amount;
+                    break;
+            }
+        }
+
+        $balance = $income_total_amount - $outcome_total_amount;
+
+        $response['period_incomes'] = $income_total_amount;
+        $response['period_outcomes'] = $outcome_total_amount;
+        $response['period_balance'] = $balance;
+
+        return $response;
     }
 
 }
