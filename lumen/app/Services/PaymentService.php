@@ -43,7 +43,7 @@ class PaymentService
                 $due_date = date("Y/m/d", $due_date);
                 $invoice = InvoiceService::handleInvoice($due_date, $account->id, $amount);
                 self::schedulePayment($payment_date, $amount, $transaction_id, $installment, $invoice->id);
-                return true;
+                continue;
             }
             $payment = self::schedulePayment($payment_date, $amount, $transaction_id, $installment);
 
