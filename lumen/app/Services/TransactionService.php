@@ -91,7 +91,6 @@ class TransactionService
 
     public static function insertInvoiceTransaction($invoice, $account, $amount, $payment_date)
     {
-        define("CREDIT_CARD_PAYMENT_CATEGORY", 1);
         $due_date = date("m/Y", strtotime($invoice->due_date));
 
         $transaction = new Transaction();
@@ -101,7 +100,7 @@ class TransactionService
         $transaction->amount = $amount;
         $transaction->date = $payment_date;
         $transaction->installments = 1;
-        $transaction->category_id = CREDIT_CARD_PAYMENT_CATEGORY;
+        $transaction->category_id = CategoryService::CREDIT_CARD_PAYMENT_CATEGORY;
         $transaction->origin_account_id = $account->id;
         $transaction->destiny_account_id = NULL;
         $transaction->invoice_first_charge = NULL;
