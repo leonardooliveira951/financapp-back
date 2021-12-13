@@ -15,7 +15,7 @@ class CategoriesSeeders extends Migration
     public function up()
     {
         DB::table('categories')->insert([
-            ['id' => 1, 'user_id' => null, 'name' => 'PAGAMENTO DE FATURA', 'type' => "outcome", 'colord_id' => 1],
+            ['id' => 1, 'user_id' => null, 'name' => 'PAGAMENTO DE FATURA', 'type' => "outcome", 'color_id' => 1],
         ]);
     }
 
