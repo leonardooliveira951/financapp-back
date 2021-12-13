@@ -90,7 +90,9 @@ class PaymentService
     {
         $current_date = Carbon::now();
         $payments = Payment::where('date', '<=', $current_date)
-            ->where('status', 'scheduled')->get();
+            ->where('status', 'scheduled')
+            ->where('invoice_id', null)
+            ->get();
 
         foreach ($payments as $payment)
         {
@@ -99,7 +101,7 @@ class PaymentService
             $origin_account = Account::where('id', $transaction['origin_account_id'])->get()->first();
             $destiny_account = Account::where('id', $transaction['destiny_account_id'])->get()->first();
 
-            if (($origin_account['type'] == 'Cartão de crédito') || ($destiny_account['type'] == 'Cartão de crédito'))
+            if (($origin_account['type'] == 'credit_card') || ($destiny_account['type'] == 'credit_card'))
             {
                 return false;
             }
