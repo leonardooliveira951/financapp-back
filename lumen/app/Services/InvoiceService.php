@@ -6,6 +6,8 @@ namespace App\Services;
 use App\Models\Account;
 use App\Models\Invoice;
 use App\Models\Payment;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class InvoiceService
 {
@@ -82,6 +84,22 @@ class InvoiceService
         ]);
 
         return 'Fatura paga com sucesso';
+    }
+
+    public static function changeInvoiceStatusToClosed()
+    {
+        $current_date = Carbon::now();
+
+        $invoices = Invoice::where('due_date', '<=', $current_date)
+            ->where('status', 'open')
+            ->get();
+
+        foreach ($invoices as $invoice)
+        {
+            $invoice->update([
+                'status' => 'closed'
+            ]);
+        }
     }
 
 }
