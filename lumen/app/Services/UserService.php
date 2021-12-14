@@ -37,7 +37,11 @@ class UserService
             'iat' => time(),
             'exp' => time() + 3600
         ], env('APP_KEY'));
-        return [$token, $user];
+
+        $response['token'] = $token;
+        $response['user'] = $user;
+
+        return $response;
     }
 
     public static function changeName($request)
@@ -54,5 +58,22 @@ class UserService
     public static function getUser($request)
     {
         return JWT::decode($request->bearerToken(), env('APP_KEY'), array('HS256'));
+    }
+
+    public static function changePassword($request)
+    {
+        $user = User::where('id', $request->user()['id'])->first();
+
+        if (is_null($user) || !Hash::check($request->current_password, $user->password)) {
+            return null;
+        }
+
+        $user->password = Hash::make($request->new_password);
+        $user->save();
+
+        $data_to_login['email'] = $user->email;
+        $data_to_login['password'] = $request->new_password;
+        return self::loginUser($data_to_login);
+
     }
 }
