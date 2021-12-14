@@ -58,10 +58,11 @@ class UserController extends Controller
         ]);
         try {
             $response = UserService::loginUser($params);
+
             $user = [
-                'id' => $response[1]->id,
-                'name' => $response[1]->name,
-                'email' => $response[1]->email
+                'id' => $response['user']->id,
+                'name' => $response['user']->name,
+                'email' => $response['user']->email
             ];
             if ($response == null){
                 return response()->json([
@@ -74,7 +75,7 @@ class UserController extends Controller
                 'status' => true,
                 'message' => 'Login realizado com sucesso!',
                 'user' => $user,
-                'token' => $response[0]
+                'token' => $response['token']
             ], 200
             );
         } catch (Exception $e) {
@@ -101,6 +102,39 @@ class UserController extends Controller
             );
         } catch (Exception $e) {
             $message = "Erro ao alterar nome: ". $e->getMessage();
+            return response()->json([
+                'status' => false,
+                'message' => $message
+            ],500
+            );
+        }
+    }
+
+    public function changePassword(Request $request)
+    {
+        $this->validate($request, [
+            'current_password' => 'required|string',
+            'new_password' => 'required|string'
+        ]);
+        try {
+            $response = UserService::changePassword($request);
+
+            if ($response == null){
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Senha atual inválida'
+                ], 401
+                );
+            }
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Senha alterada com sucesso',
+                'token' => $response['token']
+            ], 200
+            );
+        } catch (Exception $e) {
+            $message = "Erro ao alterar senha: ". $e->getMessage();
             return response()->json([
                 'status' => false,
                 'message' => $message
