@@ -23,6 +23,9 @@ $router->group(['middleware' => 'jwt'], function () use ($router) {
     $router->post('user/{id}/change-name', [
         'uses' => 'UserController@changeName'
     ]);
+    $router->post('user/change-password', [
+        'uses' => 'UserController@changePassword'
+    ]);
 
     $router->group(['prefix' => 'account'], function () use ($router) {
         $router->get('get/all', [
