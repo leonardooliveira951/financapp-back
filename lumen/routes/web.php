@@ -74,7 +74,7 @@ $router->group(['middleware' => 'jwt'], function () use ($router) {
 
     $router->group(['prefix' => 'payment'], function () use ($router) {
         $router->get('get/summary/{period}', [
-            'uses' => 'PaymentController@getSummaryByDate'
+            'uses' => 'PaymentController@getPaymentSummaryByDate'
         ]);
     });
 
