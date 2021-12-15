@@ -46,14 +46,17 @@ class TransactionController extends Controller
 
     public function updateTransaction(Request $request)
     {
-        $this->validate($request, [
-            'description' => 'required|string',
-            'category_id' => 'required|integer',
-            'amount' => 'required|numeric',
-            'date' => 'required|date',
+        $data = $this->validate($request, [
+            'description' => 'string',
+            'category_id' => 'integer',
+            'amount' => 'numeric',
+            'installments' => 'integer',
+            'invoice_first_charge' => 'date',
+            'date' => 'date'
         ]);
+
         try {
-            $response = TransactionService::updateTransaction($request);
+            $response = TransactionService::updateTransaction($data, $request->id);
             if ($response == null){
                 return response()->json([
                     'status' => false,
@@ -63,7 +66,8 @@ class TransactionController extends Controller
             }
             return response()->json([
                 'status' => true,
-                'message' => 'Transação atualizada com sucesso'
+                'message' => 'Transação atualizada com sucesso',
+                'transaction' => $response
             ], 200
             );
         } catch (Exception $e) {
