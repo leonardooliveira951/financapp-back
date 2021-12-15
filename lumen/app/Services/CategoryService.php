@@ -42,19 +42,20 @@ class CategoryService
         return true;
     }
 
-    public static function updateCategory($request)
+    public static function updateCategory($data, $category_id)
     {
-        if(!Category::where('id',$request->id)->exists())
+        if(!Category::where('id',$category_id)->exists())
         {
             return null;
         }
-        Category::where('id',$request->id)->update([
-            'name' => $request->all()['name'],
-            'type' => $request->all()['type'],
-            'color_id' => $request->all()['color_id'],
-            'active' => $request->all()['active']
-        ]);
-        return true;
+
+        $category = Category::where('id', $category_id)->first();
+
+        $category->update(
+            $data
+        );
+
+        return $category;
     }
 
     public static function getCategories($user_id)
