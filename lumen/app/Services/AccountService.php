@@ -12,7 +12,7 @@ class AccountService
     {
         if(Account::where([
             'name' => $request['name'],
-            'type' => $request['type'], 
+            'type' => $request['type'],
             'user_id' => $request->user()['id']
         ])->exists())
         {
@@ -42,22 +42,19 @@ class AccountService
         return true;
     }
 
-    public static function updateAccount($request)
+    public static function updateAccount($data, $account_id)
     {
-        if(!Account::where('id',$request->id)->exists())
+        if(!Account::where('id',$account_id)->exists())
         {
             return null;
         }
-        Account::where('id',$request->id)->update([
-            'name' => $request->all()['name'],
-            'type' => $request->all()['type'],
-            'color_id' => $request->all()['color_id'],
-            'balance' => $request->all()['balance'],
-            'invoice_closing_date' => $request->all()['invoice_closing_date'],
-            'invoice_due_date' => $request->all()['invoice_due_date'],
-            'active' => $request->all()['active']
-        ]);
-        return true;
+        $account = Account::where('id',$account_id)->first();
+
+        $account->update(
+            $data
+        );
+
+        return $account;
     }
 
     public static function getAccounts($user_id)
