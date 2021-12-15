@@ -18,7 +18,7 @@ class PaymentController extends Controller
     {
         try {
             $response = PaymentService::getSummaryByDate($request);
-            if ($response == null){
+            if ($response == null) {
                 return response()->json([
                     'status' => false,
                     'message' => 'Nenhum pagamento localizado.'
@@ -32,11 +32,11 @@ class PaymentController extends Controller
             ], 200
             );
         } catch (Exception $e) {
-            $message = "Erro ao listar resumo de pagamentos: ". $e->getMessage();
+            $message = "Erro ao listar resumo de pagamentos: " . $e->getMessage();
             return response()->json([
                 'status' => false,
                 'message' => $message
-            ],500
+            ], 500
             );
         }
     }

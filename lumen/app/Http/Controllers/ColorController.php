@@ -25,11 +25,11 @@ class ColorController extends Controller
             ], 200
             );
         } catch (Exception $e) {
-            $message = "Erro ao listar cores: ". $e->getMessage();
+            $message = "Erro ao listar cores: " . $e->getMessage();
             return response()->json([
                 'status' => false,
                 'message' => $message
-            ],500
+            ], 500
             );
         }
     }

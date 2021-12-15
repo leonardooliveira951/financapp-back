@@ -10,12 +10,11 @@ class AccountService
 {
     public static function insertAccount($request)
     {
-        if(Account::where([
+        if (Account::where([
             'name' => $request['name'],
             'type' => $request['type'],
             'user_id' => $request->user()['id']
-        ])->exists())
-        {
+        ])->exists()) {
             return null;
         }
         $account = new Account;
@@ -32,11 +31,10 @@ class AccountService
 
     public static function deleteAccount($id)
     {
-        if(!Account::where('id',$id)->exists())
-        {
+        if (!Account::where('id', $id)->exists()) {
             return null;
         }
-        Account::where('id',$id)->update([
+        Account::where('id', $id)->update([
             'active' => false
         ]);
         return true;
@@ -44,12 +42,11 @@ class AccountService
 
     public static function updateAccount($data, $account_id)
     {
-        if(!Account::where('id',$account_id)->exists())
-        {
+        if (!Account::where('id', $account_id)->exists()) {
             return null;
         }
 
-        $account = Account::where('id',$account_id)->first();
+        $account = Account::where('id', $account_id)->first();
 
         $account->update(
             $data
@@ -61,9 +58,8 @@ class AccountService
     public static function getAccounts($user_id)
     {
         $response = [];
-        $accounts= Account::where('user_id', $user_id)->get();
-        foreach ($accounts as $account)
-        {
+        $accounts = Account::where('user_id', $user_id)->get();
+        foreach ($accounts as $account) {
             $response_array['id'] = $account['id'];
             $response_array['name'] = $account['name'];
             $response_array['type'] = $account['type'];

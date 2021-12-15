@@ -13,12 +13,11 @@ class CategoryService
 
     public static function insertCategory($request)
     {
-        if(Category::where([
+        if (Category::where([
             'name' => $request['name'],
             'type' => $request['type'],
             'user_id' => $request->user()['id']
-        ])->exists())
-        {
+        ])->exists()) {
             return null;
         }
         $category = new Category;
@@ -32,11 +31,10 @@ class CategoryService
 
     public static function deleteCategory($id)
     {
-        if(!Category::where('id',$id)->exists())
-        {
+        if (!Category::where('id', $id)->exists()) {
             return null;
         }
-        Category::where('id',$id)->update([
+        Category::where('id', $id)->update([
             'active' => false
         ]);
         return true;
@@ -44,8 +42,7 @@ class CategoryService
 
     public static function updateCategory($data, $category_id)
     {
-        if(!Category::where('id',$category_id)->exists())
-        {
+        if (!Category::where('id', $category_id)->exists()) {
             return null;
         }
 
@@ -62,8 +59,7 @@ class CategoryService
     {
         $response = [];
         $categories = Category::where('user_id', $user_id)->get();
-        foreach ($categories as $category)
-        {
+        foreach ($categories as $category) {
             $response_array['id'] = $category['id'];
             $response_array['name'] = $category['name'];
             $response_array['type'] = $category['type'];

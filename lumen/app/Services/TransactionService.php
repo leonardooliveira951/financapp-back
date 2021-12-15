@@ -33,20 +33,20 @@ class TransactionService
         return $transaction;
     }
 
-    public static function updateTransaction($request)
+    public static function updateTransaction($data, $transaction_id)
     {
-        if(!Transaction::where('id',$request->id)->exists())
+        if(!Transaction::where('id',$transaction_id)->exists())
         {
             return null;
         }
-        Transaction::where('id',$request->id)->update([
-            'description' => $request->all()['description'],
-            'category_id' => $request->all()['category_id'],
-            'amount' => $request->all()['amount'],
-            'date' => $request->all()['date']
-        ]);
+
+        $transaction = Transaction::where('id',$transaction_id)->first();
+
+        $transaction->update(
+            $data
+        );
         // TODO updatePayment() -> precisa verificar se já foi pago e alterar a data de todos os lançamentos referentes a essa transação
-        return true;
+        return $transaction;
     }
 
     public static function deleteTransaction($id)

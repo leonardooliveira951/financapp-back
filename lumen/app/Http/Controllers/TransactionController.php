@@ -35,11 +35,11 @@ class TransactionController extends Controller
             ], 201
             );
         } catch (Exception $e) {
-            $message = "Erro ao inserir transação: ". $e->getMessage();
+            $message = "Erro ao inserir transação: " . $e->getMessage();
             return response()->json([
                 'status' => false,
                 'message' => $message
-            ],500
+            ], 500
             );
         }
     }
@@ -57,7 +57,7 @@ class TransactionController extends Controller
 
         try {
             $response = TransactionService::updateTransaction($data, $request->id);
-            if ($response == null){
+            if ($response == null) {
                 return response()->json([
                     'status' => false,
                     'message' => 'Conta não localizada.'
@@ -71,11 +71,11 @@ class TransactionController extends Controller
             ], 200
             );
         } catch (Exception $e) {
-            $message = "Erro ao atualizar transação: ". $e->getMessage();
+            $message = "Erro ao atualizar transação: " . $e->getMessage();
             return response()->json([
                 'status' => false,
                 'message' => $message
-            ],500
+            ], 500
             );
         }
     }
@@ -84,7 +84,7 @@ class TransactionController extends Controller
     {
         try {
             $response = TransactionService::deleteTransaction($request->id);
-            if ($response == null){
+            if ($response == null) {
                 return response()->json([
                     'status' => false,
                     'message' => 'Transação não localizada.'
@@ -97,11 +97,11 @@ class TransactionController extends Controller
             ], 200
             );
         } catch (Exception $e) {
-            $message = "Erro ao deletar transação: ". $e->getMessage();
+            $message = "Erro ao deletar transação: " . $e->getMessage();
             return response()->json([
                 'status' => false,
                 'message' => $message
-            ],500
+            ], 500
             );
         }
     }
@@ -110,7 +110,7 @@ class TransactionController extends Controller
     {
         try {
             $response = TransactionService::getTransactionByDate($request);
-            if ($response == null){
+            if ($response == null) {
                 return response()->json([
                     'status' => false,
                     'message' => 'Nenhuma transação localizada.'
@@ -124,11 +124,11 @@ class TransactionController extends Controller
             ], 200
             );
         } catch (Exception $e) {
-            $message = "Erro ao listar transações: ". $e->getMessage();
+            $message = "Erro ao listar transações: " . $e->getMessage();
             return response()->json([
                 'status' => false,
                 'message' => $message
-            ],500
+            ], 500
             );
         }
     }

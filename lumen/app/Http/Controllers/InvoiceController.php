@@ -24,11 +24,11 @@ class InvoiceController extends Controller
             ], 200
             );
         } catch (Exception $e) {
-            $message = "Fatura não localizada ou não existente: ". $e->getMessage();
+            $message = "Fatura não localizada ou não existente: " . $e->getMessage();
             return response()->json([
                 'status' => false,
                 'message' => $message
-            ],500
+            ], 500
             );
         }
     }
@@ -49,11 +49,11 @@ class InvoiceController extends Controller
             ], 200
             );
         } catch (Exception $e) {
-            $message = "Erro ao pagar fatura: ". $e->getMessage();
+            $message = "Erro ao pagar fatura: " . $e->getMessage();
             return response()->json([
                 'status' => false,
                 'message' => $message
-            ],500
+            ], 500
             );
         }
     }

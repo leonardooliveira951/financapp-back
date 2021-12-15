@@ -28,7 +28,7 @@ class UserController extends Controller
 
         try {
             $response = UserService::createUser($params);
-            if ($response == null){
+            if ($response == null) {
                 return response()->json([
                     'status' => false,
                     'user' => 'email já cadastrado'
@@ -41,11 +41,11 @@ class UserController extends Controller
             ], 201
             );
         } catch (Exception $e) {
-            $message = "Erro ao criar usuário: ". $e->getMessage();
+            $message = "Erro ao criar usuário: " . $e->getMessage();
             return response()->json([
                 'status' => false,
                 'message' => $message
-            ],500
+            ], 500
             );
         }
     }
@@ -53,8 +53,8 @@ class UserController extends Controller
     public function login(Request $request)
     {
         $params = $this->validate($request, [
-        'email' => 'required|string',
-        'password' => 'required|string'
+            'email' => 'required|string',
+            'password' => 'required|string'
         ]);
         try {
             $response = UserService::loginUser($params);
@@ -64,7 +64,7 @@ class UserController extends Controller
                 'name' => $response['user']->name,
                 'email' => $response['user']->email
             ];
-            if ($response == null){
+            if ($response == null) {
                 return response()->json([
                     'status' => false,
                     'message' => 'Usuário ou senha inválidos'
@@ -79,11 +79,11 @@ class UserController extends Controller
             ], 200
             );
         } catch (Exception $e) {
-            $message = "Erro ao realizar login: ". $e->getMessage();
+            $message = "Erro ao realizar login: " . $e->getMessage();
             return response()->json([
                 'status' => false,
                 'message' => $message
-            ],500
+            ], 500
             );
         }
     }
@@ -101,11 +101,11 @@ class UserController extends Controller
             ], 200
             );
         } catch (Exception $e) {
-            $message = "Erro ao alterar nome: ". $e->getMessage();
+            $message = "Erro ao alterar nome: " . $e->getMessage();
             return response()->json([
                 'status' => false,
                 'message' => $message
-            ],500
+            ], 500
             );
         }
     }
@@ -119,7 +119,7 @@ class UserController extends Controller
         try {
             $response = UserService::changePassword($request);
 
-            if ($response == null){
+            if ($response == null) {
                 return response()->json([
                     'status' => false,
                     'message' => 'Senha atual inválida'
@@ -134,11 +134,11 @@ class UserController extends Controller
             ], 200
             );
         } catch (Exception $e) {
-            $message = "Erro ao alterar senha: ". $e->getMessage();
+            $message = "Erro ao alterar senha: " . $e->getMessage();
             return response()->json([
                 'status' => false,
                 'message' => $message
-            ],500
+            ], 500
             );
         }
     }
@@ -158,11 +158,11 @@ class UserController extends Controller
             ], 200
             );
         } catch (Exception $e) {
-            $message = "Erro ao buscar usuário: ". $e->getMessage();
+            $message = "Erro ao buscar usuário: " . $e->getMessage();
             return response()->json([
                 'status' => false,
                 'message' => $message
-            ],500
+            ], 500
             );
         }
     }

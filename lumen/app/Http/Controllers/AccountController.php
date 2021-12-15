@@ -25,11 +25,11 @@ class AccountController extends Controller
             ], 200
             );
         } catch (Exception $e) {
-            $message = "Erro ao buscar contas: ". $e->getMessage();
+            $message = "Erro ao buscar contas: " . $e->getMessage();
             return response()->json([
                 'status' => false,
                 'message' => $message
-            ],500
+            ], 500
             );
         }
     }
@@ -46,7 +46,7 @@ class AccountController extends Controller
         ]);
         try {
             $response = AccountService::insertAccount($request);
-            if ($response == null){
+            if ($response == null) {
                 return response()->json([
                     'status' => false,
                     'account' => 'Nome de conta já utilizado.'
@@ -60,11 +60,11 @@ class AccountController extends Controller
             ], 201
             );
         } catch (Exception $e) {
-            $message = "Erro ao inserir conta: ". $e->getMessage();
+            $message = "Erro ao inserir conta: " . $e->getMessage();
             return response()->json([
                 'status' => false,
                 'message' => $message
-            ],500
+            ], 500
             );
         }
     }
@@ -81,7 +81,7 @@ class AccountController extends Controller
 
         try {
             $response = AccountService::updateAccount($data, $request->id);
-            if ($response == null){
+            if ($response == null) {
                 return response()->json([
                     'status' => false,
                     'account' => 'Conta não localizada.'
@@ -95,11 +95,11 @@ class AccountController extends Controller
             ], 200
             );
         } catch (Exception $e) {
-            $message = "Erro ao atualizar conta: ". $e->getMessage();
+            $message = "Erro ao atualizar conta: " . $e->getMessage();
             return response()->json([
                 'status' => false,
                 'message' => $message
-            ],500
+            ], 500
             );
         }
     }
@@ -108,7 +108,7 @@ class AccountController extends Controller
     {
         try {
             $response = AccountService::deleteAccount($request->id);
-            if ($response == null){
+            if ($response == null) {
                 return response()->json([
                     'status' => false,
                     'account' => 'Conta não localizada.'
@@ -122,11 +122,11 @@ class AccountController extends Controller
             ], 200
             );
         } catch (Exception $e) {
-            $message = "Erro ao deletar conta: ". $e->getMessage();
+            $message = "Erro ao deletar conta: " . $e->getMessage();
             return response()->json([
                 'status' => false,
                 'message' => $message
-            ],500
+            ], 500
             );
         }
     }

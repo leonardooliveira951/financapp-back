@@ -25,11 +25,11 @@ class CategoryController extends Controller
             ], 200
             );
         } catch (Exception $e) {
-            $message = "Erro ao buscar categorias: ". $e->getMessage();
+            $message = "Erro ao buscar categorias: " . $e->getMessage();
             return response()->json([
                 'status' => false,
                 'message' => $message
-            ],500
+            ], 500
             );
         }
     }
@@ -44,7 +44,7 @@ class CategoryController extends Controller
 
         try {
             $response = CategoryService::insertCategory($request);
-            if ($response == null){
+            if ($response == null) {
                 return response()->json([
                     'status' => false,
                     'category' => 'Nome de categoria já utilizado.'
@@ -58,11 +58,11 @@ class CategoryController extends Controller
             ], 201
             );
         } catch (Exception $e) {
-            $message = "Erro ao criar categoria: ". $e->getMessage();
+            $message = "Erro ao criar categoria: " . $e->getMessage();
             return response()->json([
                 'status' => false,
                 'message' => $message
-            ],500
+            ], 500
             );
         }
     }
@@ -71,7 +71,7 @@ class CategoryController extends Controller
     {
         try {
             $response = CategoryService::deleteCategory($request->id);
-            if ($response == null){
+            if ($response == null) {
                 return response()->json([
                     'status' => false,
                     'category' => 'Categoria não localizada'
@@ -85,11 +85,11 @@ class CategoryController extends Controller
             ], 200
             );
         } catch (Exception $e) {
-            $message = "Erro ao deletar categoria: ". $e->getMessage();
+            $message = "Erro ao deletar categoria: " . $e->getMessage();
             return response()->json([
                 'status' => false,
                 'message' => $message
-            ],500
+            ], 500
             );
         }
     }
@@ -115,14 +115,14 @@ class CategoryController extends Controller
                 'status' => true,
                 'message' => 'Categoria alterada com sucesso',
                 'category' => $response
-            ],200
+            ], 200
             );
         } catch (Exception $e) {
-            $message = "Erro ao atualizar categoria: ". $e->getMessage();
+            $message = "Erro ao atualizar categoria: " . $e->getMessage();
             return response()->json([
                 'status' => false,
                 'message' => $message
-            ],500
+            ], 500
             );
         }
 

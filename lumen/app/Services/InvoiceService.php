@@ -16,7 +16,7 @@ class InvoiceService
         $invoice = Invoice::where('account_id', $account_id)
             ->where('due_date', $due_date)->get()->first();
 
-        if (!$invoice){
+        if (!$invoice) {
             return self::insertNewInvoice($account_id, $amount, $due_date);
         }
 
@@ -53,17 +53,17 @@ class InvoiceService
         $invoice = Invoice::where('id', $request->invoice_id)->get()->first();
         $paying_account = Account::where('id', $request->paying_account)->get()->first();
 
-        if (!$invoice || !$paying_account){
+        if (!$invoice || !$paying_account) {
             return 'Fatura ou conta não encontrados';
 
         }
-        if ($invoice->status != 'closed'){
+        if ($invoice->status != 'closed') {
             return 'Fatura não está fechada';
         }
 
         $payment_difference = $invoice->amount - $request->amount;
 
-        if ($payment_difference != 0){
+        if ($payment_difference != 0) {
             $due_date = strtotime("+1 month", strtotime($invoice->due_date));
             $due_date = date("Y/m/d", $due_date);
 
@@ -74,7 +74,7 @@ class InvoiceService
 
         $invoice_payments = Payment::where('invoice_id', $invoice->id)->get();
 
-        foreach ($invoice_payments as $payment){
+        foreach ($invoice_payments as $payment) {
             $payment->update([
                 'status' => 'done'
             ]);
@@ -94,8 +94,7 @@ class InvoiceService
             ->where('status', 'open')
             ->get();
 
-        foreach ($invoices as $invoice)
-        {
+        foreach ($invoices as $invoice) {
             $invoice->update([
                 'status' => 'closed'
             ]);

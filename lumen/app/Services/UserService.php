@@ -46,11 +46,10 @@ class UserService
 
     public static function changeName($request)
     {
-        if(!User::where('id',$request->id)->exists())
-        {
+        if (!User::where('id', $request->id)->exists()) {
             return null;
         }
-        return User::where('id',$request->id)->update([
+        return User::where('id', $request->id)->update([
             'name' => $request->all()['name']
         ]);
     }
