@@ -48,6 +48,7 @@ class AccountService
         {
             return null;
         }
+
         $account = Account::where('id',$account_id)->first();
 
         $account->update(
