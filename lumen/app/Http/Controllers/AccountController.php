@@ -71,15 +71,16 @@ class AccountController extends Controller
 
     public function updateAccount(Request $request)
     {
-        $this->validate($request, [
-            'name' => 'required|string',
-            'type' => 'required|string',
+        $data = $this->validate($request, [
+            'name' => 'string',
+            'balance' => 'numeric',
+            'color_id' => 'integer',
             'invoice_closing_date' => 'integer',
-            'invoice_due_date' => 'integer',
-            'color_id' => 'required|integer'
+            'invoice_due_date' => 'integer'
         ]);
+
         try {
-            $response = AccountService::updateAccount($request);
+            $response = AccountService::updateAccount($data, $request->id);
             if ($response == null){
                 return response()->json([
                     'status' => false,
@@ -90,7 +91,7 @@ class AccountController extends Controller
             return response()->json([
                 'status' => true,
                 'message' => 'Conta atualizada com sucesso',
-                'category' => $response
+                'account' => $response
             ], 200
             );
         } catch (Exception $e) {
