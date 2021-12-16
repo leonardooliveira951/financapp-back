@@ -75,8 +75,9 @@ class AccountController extends Controller
             'name' => 'string',
             'balance' => 'numeric',
             'color_id' => 'integer',
-            'invoice_closing_date' => 'integer',
-            'invoice_due_date' => 'integer'
+            'invoice_closing_date' => 'numeric|nullable',
+            'invoice_due_date' => 'numeric|nullable',
+            'active' => 'boolean'
         ]);
 
         try {
