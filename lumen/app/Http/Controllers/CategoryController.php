@@ -99,7 +99,7 @@ class CategoryController extends Controller
         $data = $this->validate($request, [
             'name' => 'string',
             'color_id' => 'integer',
-            'active' => 'string'
+            'active' => 'boolean'
         ]);
 
         try {
