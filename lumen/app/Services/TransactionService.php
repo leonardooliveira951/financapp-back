@@ -9,6 +9,7 @@ use App\Models\Payment;
 use App\Models\Transaction;
 use App\Services\PaymentService;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 
 class TransactionService
@@ -35,12 +36,11 @@ class TransactionService
 
     public static function updateTransaction($data, $transaction_id)
     {
-        if(!Transaction::where('id',$transaction_id)->exists())
-        {
+        if (!Transaction::where('id', $transaction_id)->exists()) {
             return null;
         }
 
-        $transaction = Transaction::where('id',$transaction_id)->first();
+        $transaction = Transaction::where('id', $transaction_id)->first();
 
         $transaction->update(
             $data
@@ -51,11 +51,10 @@ class TransactionService
 
     public static function deleteTransaction($id)
     {
-        if(!Transaction::where('id',$id)->exists())
-        {
+        if (!Transaction::where('id', $id)->exists()) {
             return null;
         }
-        return Transaction::where('id',$id)->delete();
+        return Transaction::where('id', $id)->delete();
     }
 
     public static function getTransactionByDate($request)
@@ -74,8 +73,9 @@ class TransactionService
             ->whereRaw('YEAR(payments.date) = ' . $year)
             ->get();
 
-        foreach ($payments as $payment){
+        foreach ($payments as $payment) {
             $response_array['id'] = $payment->transaction_id;
+            $response_array['payment_id'] = $payment->id;
             $response_array['description'] = $payment->description;
             $response_array['category'] = Category::where('id', $payment->category_id)->get()->first();
             $response_array['account'] = Account::where('id', $payment->origin_account_id)->get()->first();
@@ -110,4 +110,76 @@ class TransactionService
 
         return $transaction;
     }
+
+    public static function getDashboard($period, $user_id)
+    {
+        $month = date("m", strtotime($period));
+        $year = date("Y", strtotime($period));
+        $month_expenses = self::getMonthlyExpenses($user_id, $month, $year);
+
+        $monthly_balance = self::getMonthlyBalance($user_id, $month, $year);
+
+        $response["month"] = $month;
+        $response["year"] = $year;
+        $response["month_expenses"] = $month_expenses;
+        $response["monthly_balance"] = $monthly_balance;
+
+        return $response;
+    }
+
+    private static function getMonthlyExpenses($user_id, $month, $year)
+    {
+        return DB::table('categories')
+            ->join('transactions', 'categories.id', '=', 'transactions.category_id')
+            ->join('payments', 'transactions.id', '=', 'payments.transaction_id')
+            ->join('colors', 'categories.color_id', '=', 'colors.id')
+            ->select('categories.name AS name', DB::raw('SUM(payments.amount) AS amount'), DB::raw('MAX(colors.hex_code) AS color'))
+            ->whereRaw('categories.user_id = ' . $user_id)
+            ->whereRaw('categories.type = "outcome"')
+            ->whereRaw('MONTH(payments.date) = ' . $month)
+            ->whereRaw('YEAR(payments.date) = ' . $year)
+            ->groupBy('name')
+            ->get();
+    }
+
+    private static function getMonthlyBalance($user_id, $analysis_month, $analysis_year)
+    {
+        $response = [];
+        for ($x = -3; $x < 3; $x++)
+        {
+            $current_month = Carbon::create($analysis_year, $analysis_month+$x)
+                ->format('m');
+            $current_year = Carbon::create($analysis_year, $analysis_month+$x)
+                ->format('Y');
+
+            $month_income = self::getSumOfTotalByType($user_id, $current_month, $current_year, "income");
+            $month_outcome = self::getSumOfTotalByType($user_id, $current_month, $current_year, "outcome");
+            $month_balance['month'] = date("F",mktime(0,0,0,$current_month,1,2021));
+            $month_balance['income'] = $month_income;
+            $month_balance['outcome'] = $month_outcome;
+
+            $response[] = $month_balance;
+        }
+        return $response;
+    }
+
+    private static function getSumOfTotalByType($user_id, $month, $year, $type)
+    {
+        $amount = DB::table('payments')
+            ->join('transactions', 'payments.transaction_id', '=', 'transactions.id')
+            ->select(
+                DB::raw('SUM(payments.amount) AS amount'))
+            ->whereRaw('transactions.user_id = ' . $user_id)
+            ->whereRaw('MONTH(payments.date) = ' . $month)
+            ->whereRaw('YEAR(payments.date) = ' . $year)
+            ->whereRaw("transactions.type = '$type'")
+            ->groupBy('type')
+            ->get()->first();
+        if (!$amount)
+        {
+            return null;
+        }
+        return $amount->amount;
+    }
+
 }
