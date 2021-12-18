@@ -142,14 +142,14 @@ class TransactionService
             ->get();
     }
 
-    private static function getMonthlyBalance($user_id, $analysis_month, $analysis_year)
+    private static function getMonthlyBalance($user_id, $month, $year)
     {
         $response = [];
         for ($x = -3; $x < 3; $x++)
         {
-            $current_month = Carbon::create($analysis_year, $analysis_month+$x)
+            $current_month = Carbon::create($year, $month+$x)
                 ->format('m');
-            $current_year = Carbon::create($analysis_year, $analysis_month+$x)
+            $current_year = Carbon::create($year, $month+$x)
                 ->format('Y');
 
             $month_income = self::getSumOfTotalByType($user_id, $current_month, $current_year, "income");
