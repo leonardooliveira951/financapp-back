@@ -47,6 +47,7 @@ class TransactionController extends Controller
     public function updateTransaction(Request $request)
     {
         $data = $this->validate($request, [
+            'payment_id' => 'integer',
             'description' => 'string',
             'category_id' => 'integer',
             'amount' => 'numeric',
@@ -125,6 +126,33 @@ class TransactionController extends Controller
             );
         } catch (Exception $e) {
             $message = "Erro ao listar transações: " . $e->getMessage();
+            return response()->json([
+                'status' => false,
+                'message' => $message
+            ], 500
+            );
+        }
+    }
+
+    public function getDashboard(Request $request)
+    {
+        try {
+            $response = TransactionService::getDashboard($request->period, $request->user()['id']);
+            if ($response == null) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Dados não localizados'
+                ], 404
+                );
+            }
+            return response()->json([
+                'status' => true,
+                'message' => 'Dashboard carregado com sucesso',
+                'dashboard' => $response,
+            ], 200
+            );
+        } catch (Exception $e) {
+            $message = "Erro ao carregar dashboard: " . $e->getMessage();
             return response()->json([
                 'status' => false,
                 'message' => $message
