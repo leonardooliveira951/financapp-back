@@ -17,7 +17,7 @@ class TransactionController extends Controller
     public function insertTransaction(Request $request)
     {
         $this->validate($request, [
-            'description' => 'required|string',
+            'description' => 'string',
             'type' => 'required|string',
             'amount' => 'required|numeric',
             'date' => 'required|date',
