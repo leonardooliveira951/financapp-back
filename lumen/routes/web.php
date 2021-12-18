@@ -91,6 +91,10 @@ $router->group(['middleware' => 'jwt'], function () use ($router) {
     $router->get('colors', [
         'uses' => 'ColorController@getColors'
     ]);
+
+    $router->get('dashboard/{period}', [
+        'uses' => 'TransactionController@getDashboard'
+    ]);
 });
 
 
