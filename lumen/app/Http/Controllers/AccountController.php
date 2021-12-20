@@ -40,8 +40,8 @@ class AccountController extends Controller
             'name' => 'required|string',
             'type' => 'required|string',
             'balance' => 'required|numeric',
-            'invoice_closing_date' => 'integer',
-            'invoice_due_date' => 'integer',
+            'invoice_closing_date' => 'integer|between:1,31|nullable',
+            'invoice_due_date' => 'integer|between:1,31|nullable',
             'color_id' => 'required|integer',
         ]);
         try {
@@ -75,8 +75,8 @@ class AccountController extends Controller
             'name' => 'string',
             'balance' => 'numeric',
             'color_id' => 'integer',
-            'invoice_closing_date' => 'numeric|nullable',
-            'invoice_due_date' => 'numeric|nullable',
+            'invoice_closing_date' => 'integer|between:1,31|nullable',
+            'invoice_due_date' => 'integer|between:1,31|nullable',
             'active' => 'boolean'
         ]);
 
