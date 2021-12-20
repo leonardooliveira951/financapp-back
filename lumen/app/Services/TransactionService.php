@@ -8,8 +8,10 @@ use App\Models\Category;
 use App\Models\Payment;
 use App\Models\Transaction;
 use App\Services\PaymentService;
+use DateTime;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use IntlDateFormatter;
 
 
 class TransactionService
@@ -145,16 +147,16 @@ class TransactionService
     private static function getMonthlyBalance($user_id, $month, $year)
     {
         $response = [];
-        for ($x = -3; $x < 3; $x++)
+        for ($x = 5; $x >= 0; $x--)
         {
-            $current_month = Carbon::create($year, $month+$x)
+            $current_month = Carbon::create($year, $month-$x)
                 ->format('m');
-            $current_year = Carbon::create($year, $month+$x)
+            $current_year = Carbon::create($year, $month-$x)
                 ->format('Y');
 
             $month_income = self::getSumOfTotalByType($user_id, $current_month, $current_year, "income");
             $month_outcome = self::getSumOfTotalByType($user_id, $current_month, $current_year, "outcome");
-            $month_balance['month'] = date("F",mktime(0,0,0,$current_month,1,2021));
+            $month_balance['month'] = date("M",mktime(0,0,0,$current_month,1,2021));
             $month_balance['income'] = $month_income;
             $month_balance['outcome'] = $month_outcome;
 
