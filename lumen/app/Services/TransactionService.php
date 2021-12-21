@@ -43,11 +43,15 @@ class TransactionService
         }
 
         $transaction = Transaction::where('id', $transaction_id)->first();
+        $account = Account::where('id', $transaction->origin_account_id)->first();
+
+        if ($account->type == "credit_card"){
+            return false;
+        }
 
         if (isset($data['amount']) || isset($data['date'])){
-            PaymentService::updatePaymentByTransaction($data);
+            PaymentService::updatePaymentByTransaction($data, $account, $transaction->type);
         }
-        dd('coco');
 
         dd('tchau');
         $transaction->update(
@@ -103,6 +107,7 @@ class TransactionService
             $response_array['description'] = $payment->description;
             $response_array['category'] = Category::where('id', $payment->category_id)->get()->first();
             $response_array['account'] = Account::where('id', $payment->origin_account_id)->get()->first();
+            $response_array['destiny_account'] = Account::where('id', $payment->destiny_account_id)->get()->first();
             $response_array['date'] = $payment->date;
             $response_array['amount'] = $payment->amount;
             $response_array['installment'] = $payment->installment . "/" . $payment->installments;
@@ -173,7 +178,7 @@ class TransactionService
             $date_timestamp = strtotime("-{$x} month", strtotime($year . "/" . $month));
             $current_month = date("m", $date_timestamp);
             $current_year = date("Y", $date_timestamp);
-            
+
             $month_income = self::getSumOfTotalByType($user_id, $current_month, $current_year, "income");
             $month_outcome = self::getSumOfTotalByType($user_id, $current_month, $current_year, "outcome");
             $month_balance['month'] = date("M", mktime(0, 0, 0, $current_month, 1, 2021));
