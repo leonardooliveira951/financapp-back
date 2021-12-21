@@ -209,4 +209,38 @@ class PaymentService
         return $response;
     }
 
+    public static function updatePaymentByTransaction($data, $account, $type , $destiny_account = null)
+    {
+        $payment = Payment::where('id', $data['payment_id'])->first();
+        $amount_diff = (isset($data['amount']) ? ($data['amount'] - $payment->amount) : 0);
+
+        $payment_update['amount'] = ($data['amount'] ?? $payment->amount);
+        $payment_update['date'] = ($data['date'] ?? $payment->date);
+        if ($payment->status == "done"){
+            switch ($type) {
+                case "income":
+                    $account->update([
+                        'balance' => $account->balance += $amount_diff
+                    ]);
+                    break;
+                case "outcome":
+                    $account->update([
+                        'balance' => $account->balance -= $amount_diff
+                    ]);
+                    break;
+                case "transfer":
+                    $account->update([
+                        'balance' => $account->balance -= $amount_diff
+                    ]);
+                    $destiny_account->update([
+                        'balance' => $destiny_account->balance += $amount_diff
+                    ]);
+                    break;
+            }
+        }
+        $payment->update($payment_update);
+        return $amount_diff;
+
+    }
+
 }
