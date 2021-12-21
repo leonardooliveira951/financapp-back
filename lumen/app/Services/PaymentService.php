@@ -129,6 +129,21 @@ class PaymentService
         return true;
     }
 
+    public static function reversePayment($amount, $account, $type)
+    {
+        if ($type == 'income') {
+            $account->update([
+                'balance' => $account->balance - $amount
+            ]);
+        }
+        if ($type == 'outcome') {
+            $account->update([
+                'balance' => $account->balance + $amount
+            ]);
+        }
+        return true;
+    }
+
     private static function makeTransfer($origin_account, $destiny_account, $amount)
     {
         $origin_account->update([
@@ -136,6 +151,17 @@ class PaymentService
         ]);
         $destiny_account->update([
             'balance' => $destiny_account->balance + $amount
+        ]);
+        return true;
+    }
+
+    public static function reverseTransfer($origin_account, $destiny_account, $amount)
+    {
+        $origin_account->update([
+            'balance' => $origin_account->balance + $amount
+        ]);
+        $destiny_account->update([
+            'balance' => $destiny_account->balance - $amount
         ]);
         return true;
     }

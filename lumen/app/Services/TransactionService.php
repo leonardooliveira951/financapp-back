@@ -56,6 +56,23 @@ class TransactionService
         if (!Transaction::where('id', $id)->exists()) {
             return null;
         }
+        $transaction = Transaction::where('id', $id)->first();
+        $origin_account = Account::where('id', $transaction->origin_account_id)->first();
+        $destiny_account = Account::where('id', $transaction->destiny_account_id)->first();
+        $payments = Payment::where('transaction_id', $id)->get();
+
+
+        if ($origin_account->type == 'credit_card') {
+            return false;
+        }
+        foreach ($payments as $payment) {
+            if ($payment->status == "done" && !$destiny_account) {
+                PaymentService::reversePayment($payment->amount, $origin_account, $transaction->type);
+            }
+            if ($payment->status == "done" && $destiny_account) {
+                PaymentService::reverseTransfer($origin_account, $destiny_account, $payment->amount);
+            }
+        }
         return Transaction::where('id', $id)->delete();
     }
 
@@ -147,16 +164,15 @@ class TransactionService
     private static function getMonthlyBalance($user_id, $month, $year)
     {
         $response = [];
-        for ($x = 5; $x >= 0; $x--)
-        {
-            $current_month = Carbon::create($year, $month-$x)
+        for ($x = 5; $x >= 0; $x--) {
+            $current_month = Carbon::create($year, $month - $x)
                 ->format('m');
-            $current_year = Carbon::create($year, $month-$x)
+            $current_year = Carbon::create($year, $month - $x)
                 ->format('Y');
 
             $month_income = self::getSumOfTotalByType($user_id, $current_month, $current_year, "income");
             $month_outcome = self::getSumOfTotalByType($user_id, $current_month, $current_year, "outcome");
-            $month_balance['month'] = date("M",mktime(0,0,0,$current_month,1,2021));
+            $month_balance['month'] = date("M", mktime(0, 0, 0, $current_month, 1, 2021));
             $month_balance['income'] = $month_income;
             $month_balance['outcome'] = $month_outcome;
 
@@ -177,8 +193,7 @@ class TransactionService
             ->whereRaw("transactions.type = '$type'")
             ->groupBy('type')
             ->get()->first();
-        if (!$amount)
-        {
+        if (!$amount) {
             return null;
         }
         return $amount->amount;
