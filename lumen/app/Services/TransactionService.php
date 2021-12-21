@@ -44,10 +44,15 @@ class TransactionService
 
         $transaction = Transaction::where('id', $transaction_id)->first();
 
+        if (isset($data['amount']) || isset($data['date'])){
+            PaymentService::updatePaymentByTransaction($data);
+        }
+        dd('coco');
+
+        dd('tchau');
         $transaction->update(
             $data
         );
-        // TODO updatePayment() -> precisa verificar se já foi pago e alterar a data de todos os lançamentos referentes a essa transação
         return $transaction;
     }
 
@@ -165,11 +170,10 @@ class TransactionService
     {
         $response = [];
         for ($x = 5; $x >= 0; $x--) {
-            $current_month = Carbon::create($year, $month - $x)
-                ->format('m');
-            $current_year = Carbon::create($year, $month - $x)
-                ->format('Y');
-
+            $date_timestamp = strtotime("-{$x} month", strtotime($year . "/" . $month));
+            $current_month = date("m", $date_timestamp);
+            $current_year = date("Y", $date_timestamp);
+            
             $month_income = self::getSumOfTotalByType($user_id, $current_month, $current_year, "income");
             $month_outcome = self::getSumOfTotalByType($user_id, $current_month, $current_year, "outcome");
             $month_balance['month'] = date("M", mktime(0, 0, 0, $current_month, 1, 2021));
