@@ -181,7 +181,7 @@ class TransactionService
     {
         $response = [];
         for ($x = 5; $x >= 0; $x--) {
-            $date_timestamp = strtotime("-{$x} month", strtotime($year . "/" . $month));
+            $date_timestamp = strtotime("-{$x} month", strtotime($year . "/" . $month . "/" . 01));
             $current_month = date("m", $date_timestamp);
             $current_year = date("Y", $date_timestamp);
 
