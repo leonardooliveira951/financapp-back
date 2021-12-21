@@ -44,18 +44,24 @@ class TransactionService
 
         $transaction = Transaction::where('id', $transaction_id)->first();
         $account = Account::where('id', $transaction->origin_account_id)->first();
+        $destiny_account = Account::where('id', $transaction->destiny_account_id)->first();
+        $update_payment_response = null;
+        $transaction_update = [];
 
         if ($account->type == "credit_card"){
             return false;
         }
 
         if (isset($data['amount']) || isset($data['date'])){
-            PaymentService::updatePaymentByTransaction($data, $account, $transaction->type);
+            $update_payment_response = PaymentService::updatePaymentByTransaction($data, $account, $transaction->type, $destiny_account);
         }
 
-        dd('tchau');
+        $transaction_update['description'] = ($data['description'] ?? $transaction->description);
+        $transaction_update['category_id'] = ($data['category_id'] ?? $transaction->category_id);
+        $transaction_update['amount'] = ($transaction->amount -= $update_payment_response);
+
         $transaction->update(
-            $data
+            $transaction_update
         );
         return $transaction;
     }
