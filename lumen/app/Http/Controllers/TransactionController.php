@@ -24,7 +24,7 @@ class TransactionController extends Controller
             'installments' => 'integer',
             'category_id' => 'required|integer',
             'origin_account_id' => 'required|integer',
-            'destiny_account_id' => 'integer'
+            'destiny_account_id' => 'integer|nullable'
         ]);
         try {
             $response = TransactionService::insertTransaction($request);
@@ -47,12 +47,10 @@ class TransactionController extends Controller
     public function updateTransaction(Request $request)
     {
         $data = $this->validate($request, [
-            'payment_id' => 'integer',
+            'payment_id' => 'required|integer',
             'description' => 'string',
             'category_id' => 'integer',
             'amount' => 'numeric',
-            'installments' => 'integer',
-            'invoice_first_charge' => 'date',
             'date' => 'date'
         ]);
 
